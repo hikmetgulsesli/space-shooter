@@ -99,6 +99,7 @@ describe('GameState Enum', () => {
         expect(GameState.PAUSED).toBe('PAUSED');
         expect(GameState.GAMEOVER).toBe('GAMEOVER');
         expect(GameState.HIGHSCORES).toBe('HIGHSCORES');
+        expect(GameState.LOADING).toBe('LOADING');
     });
 });
 
@@ -118,8 +119,8 @@ describe('Menu System', () => {
     });
 
     describe('Initial State', () => {
-        it('should start in MENU state', () => {
-            expect(game.getGameState()).toBe(GameState.MENU);
+        it('should start in LOADING state', () => {
+            expect(game.getGameState()).toBe(GameState.LOADING);
         });
     });
 
@@ -129,14 +130,14 @@ describe('Menu System', () => {
         });
 
         it('should have pause method that checks current state', () => {
-            expect(game.getGameState()).toBe(GameState.MENU);
+            expect(game.getGameState()).toBe(GameState.LOADING);
         });
     });
 
     describe('Game State Getters', () => {
         it('should expose getGameState method', () => {
             expect(typeof game.getGameState).toBe('function');
-            expect(game.getGameState()).toBe(GameState.MENU);
+            expect(game.getGameState()).toBe(GameState.LOADING);
         });
 
         it('should expose getScore method', () => {

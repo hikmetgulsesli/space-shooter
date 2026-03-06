@@ -145,7 +145,7 @@ export class Game {
         if (muteBtn) {
             muteBtn.addEventListener('click', () => {
                 this.soundManager.toggleMute();
-                muteBtn.textContent = this.soundManager.isMuted() ? '🔇' : '🔊';
+                muteBtn.textContent = this.soundManager.getIsMuted() ? '🔇' : '🔊';
             });
         }
     }

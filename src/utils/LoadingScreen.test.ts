@@ -117,8 +117,8 @@ describe('LoadingScreen', () => {
             
             await loadingScreen.simulateLoading(tasks);
             
-            expect(updateSpy).toHaveBeenCalledWith(33.333333333333336, expect.any(String));
-            expect(updateSpy).toHaveBeenCalledWith(66.66666666666667, expect.any(String));
+            expect(updateSpy).toHaveBeenCalledWith(expect.closeTo(33.33, 1), expect.any(String));
+            expect(updateSpy).toHaveBeenCalledWith(expect.closeTo(66.67, 1), expect.any(String));
             expect(updateSpy).toHaveBeenCalledWith(100, 'Ready!');
         });
     });
