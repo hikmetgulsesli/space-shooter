@@ -9,14 +9,16 @@ describe('FPSCounter', () => {
         originalLocation = window.location;
         
         // Mock URLSearchParams for each test
-        jest.spyOn(global, 'URLSearchParams').mockImplementation((url: string) => {
+        jest.spyOn(global, 'URLSearchParams').mockImplementation((url: unknown) => {
             const params = new Map<string, string>();
-            const matches = url.match(/[?&]([^=&]+)=([^&]*)/g);
-            if (matches) {
-                matches.forEach(match => {
-                    const [key, value] = match.substring(1).split('=');
-                    params.set(key, value);
-                });
+            if (typeof url === 'string') {
+                const matches = url.match(/[?&]([^=&]+)=([^&]*)/g);
+                if (matches) {
+                    matches.forEach(match => {
+                        const [key, value] = match.substring(1).split('=');
+                        params.set(key, value);
+                    });
+                }
             }
             return {
                 get: (key: string) => params.get(key) || null,
