@@ -1,0 +1,167 @@
+[
+  {
+    "screenId": "game-screen",
+    "screenTitle": "Game Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 84
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 89
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 91
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 84
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 89
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 91
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 4,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-over-screen",
+    "screenTitle": "Game Over Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "restart_alt\n              PRESS ENTER TO RESTART",
+        "line": 132
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: restart_alt]",
+        "line": 135
+      },
+      {
+        "type": "button",
+        "label": "[icon: warning]",
+        "line": 145
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "restart_alt\n              PRESS ENTER TO RESTART",
+        "line": 132
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: restart_alt]",
+        "line": 135
+      },
+      {
+        "type": "button",
+        "label": "[icon: warning]",
+        "line": 145
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 4,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "start-menu-screen",
+    "screenTitle": "Start Menu Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "NEW GAME",
+        "line": 128
+      },
+      {
+        "type": "button",
+        "label": "CONTROLS",
+        "line": 133
+      },
+      {
+        "type": "button",
+        "label": "HIGH SCORES",
+        "line": 137
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings_input_component]",
+        "line": 151
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "NEW GAME",
+        "line": 128
+      },
+      {
+        "type": "button",
+        "label": "CONTROLS",
+        "line": 133
+      },
+      {
+        "type": "button",
+        "label": "HIGH SCORES",
+        "line": 137
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings_input_component]",
+        "line": 151
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 4,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]

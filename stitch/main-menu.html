@@ -3,136 +3,92 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Astro Blaster Main Menu Screen</title>
+<title>Astro Blaster Main Menu Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#00d4ff",
-                        "background-light": "#f0f4f8",
-                        "background-dark": "#0d1117",
-                        "panel": "#161b22",
-                        "panel-border": "#30363d"
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"],
-                        "body": ["DM Sans", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"]
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    backgroundImage: {
-                        'grid-pattern': "linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px)"
-                    }
-                },
-            },
-        }
-    </script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#00d4ff",
+          "background-light": "#f5f8f8",
+          "background-dark": "#1a1a1a",
+          "panel-bg": "#232323",
+          "border-color": "#333333"
+        },
+        fontFamily: {
+          "display": ["Space Grotesk"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
 <style>
-        .grid-bg {
-            background-size: 40px 40px;
-            background-position: center center;
-        }
-        .text-glow {
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
-        }
-        .corner-bracket {
-            position: relative;
-        }
-        .corner-bracket::before, .corner-bracket::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-color: #00d4ff;
-            border-style: solid;
-        }
-        .corner-bracket-tl::before { top: 0; left: 0; border-width: 2px 0 0 2px; }
-        .corner-bracket-tr::after { top: 0; right: 0; border-width: 2px 2px 0 0; }
-        .corner-bracket-bl::before { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
-        .corner-bracket-br::after { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
-    </style>
+  .grid-bg {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .neon-glow {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  .btn-industrial {
+    position: relative;
+    border: 2px solid theme('colors.border-color');
+    background: theme('colors.panel-bg');
+    transition: all 0.3s ease;
+  }
+  .btn-industrial::before {
+    content: '';
+    position: absolute;
+    top: -4px; right: -4px; bottom: -4px; left: -4px;
+    border: 1px solid theme('colors.primary');
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .btn-industrial:hover {
+    border-color: theme('colors.primary');
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2) inset;
+  }
+  .btn-industrial:hover::before {
+    opacity: 0.5;
+  }
+</style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-body min-h-screen overflow-hidden flex flex-col relative">
-<!-- Background Grid -->
-<div class="absolute inset-0 bg-grid-pattern grid-bg pointer-events-none z-0"></div>
-<!-- Star particles (abstract representation via radial gradients) -->
-<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-<div class="absolute top-[20%] left-[10%] w-1 h-1 bg-white rounded-full opacity-50 shadow-[0_0_5px_#fff]"></div>
-<div class="absolute top-[60%] left-[80%] w-1.5 h-1.5 bg-primary rounded-full opacity-30 shadow-[0_0_8px_#00d4ff]"></div>
-<div class="absolute top-[80%] left-[30%] w-0.5 h-0.5 bg-white rounded-full opacity-40"></div>
-<div class="absolute top-[30%] left-[70%] w-1 h-1 bg-white rounded-full opacity-60 shadow-[0_0_4px_#fff]"></div>
-</div>
-<!-- UI Frame -->
-<div class="absolute inset-4 border border-panel-border z-0 pointer-events-none rounded">
-<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/50"></div>
-<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/50"></div>
-<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/50"></div>
-<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/50"></div>
-</div>
-<!-- Main Content -->
-<div class="relative z-10 flex flex-col h-screen px-8 py-8 w-full max-w-[1200px] mx-auto">
-<!-- Top Bar (Subtle) -->
-<header class="flex items-center justify-between mb-auto opacity-70">
-<div class="flex items-center gap-2 text-primary">
-<span class="material-symbols-outlined text-sm">rocket_launch</span>
-<span class="font-mono text-xs tracking-widest uppercase">v1.4.2_build</span>
-</div>
-<div class="flex gap-4">
-<span class="w-2 h-2 bg-primary/40 rounded-full"></span>
-<span class="w-2 h-2 bg-primary/40 rounded-full"></span>
-<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-</div>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden">
+<div class="absolute inset-0 grid-bg pointer-events-none"></div>
+<div class="absolute top-1/4 left-1/4 w-32 h-32 border border-primary/20 rotate-45 pointer-events-none rounded"></div>
+<div class="absolute bottom-1/3 right-1/4 w-48 h-48 border border-primary/10 rounded-full pointer-events-none"></div>
+<div class="relative z-10 flex flex-col min-h-screen p-8">
+<header class="flex justify-center items-center py-12">
+<h1 class="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 neon-glow tracking-widest text-center">
+        ASTRO BLASTER
+      </h1>
 </header>
-<!-- Center Menu -->
-<div class="flex flex-col items-center justify-center flex-1 w-full max-w-2xl mx-auto">
-<!-- Title -->
-<div class="mb-16 relative p-8 corner-bracket corner-bracket-tl corner-bracket-tr corner-bracket-bl corner-bracket-br">
-<h1 class="text-6xl md:text-8xl font-display font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-primary/80 text-glow tracking-tighter text-center">
-                    ASTRO<br/>BLASTER
-                </h1>
-</div>
-<!-- Menu Buttons -->
-<div class="flex flex-col gap-4 w-full max-w-[320px]">
-<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
-<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
-<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">START GAME</span>
-<span class="material-symbols-outlined absolute right-4 opacity-0 group-hover:opacity-100 text-primary transform -translate-x-2 group-hover:translate-x-0 transition-all">chevron_right</span>
+<main class="flex-1 flex justify-center items-center">
+<button class="btn-industrial px-12 py-6 text-2xl font-bold text-primary tracking-widest uppercase rounded">
+        START MISSION
+      </button>
+</main>
+<footer class="flex justify-between items-end mt-auto pointer-events-none">
+<button class="pointer-events-auto p-4 border border-border-color bg-panel-bg hover:border-primary hover:text-primary transition-colors rounded group flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all">settings</span>
 </button>
-<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
-<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
-<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">HIGH SCORES</span>
+<div class="flex flex-col gap-2 items-center pointer-events-auto">
+<div class="h-2 w-32 bg-border-color rounded overflow-hidden">
+<div class="h-full w-2/3 bg-primary"></div>
+</div>
+<p class="text-xs text-slate-400 uppercase tracking-widest">System Ready</p>
+</div>
+<button class="pointer-events-auto p-4 border border-border-color bg-panel-bg hover:border-primary hover:text-primary transition-colors rounded group flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all">volume_up</span>
 </button>
-<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
-<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
-<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">SETTINGS</span>
-</button>
-<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden mt-4">
-<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
-<span class="font-display font-bold text-lg tracking-widest text-slate-400 group-hover:text-primary transition-colors group-hover:text-glow">EXIT</span>
-</button>
-</div>
-</div>
-<!-- Footer / Status -->
-<footer class="mt-auto flex justify-between items-end w-full pt-8 border-t border-panel-border/50">
-<div class="flex items-center gap-2 text-primary">
-<div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_5px_#00d4ff]"></div>
-<span class="font-mono text-[10px] tracking-wider uppercase opacity-80">SYSTEM: ONLINE</span>
-</div>
-<div class="font-mono text-[10px] tracking-wider text-slate-500 uppercase flex flex-col items-end">
-<span>[UPLINK ESTABLISHED]</span>
-<span>LATENCY: 12ms</span>
-</div>
 </footer>
 </div>
 </body></html>
