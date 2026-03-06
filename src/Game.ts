@@ -5,6 +5,11 @@ import { Particle } from './effects/Particle';
 import { InputHandler } from './input/InputHandler';
 import { CollisionManager } from './collision/CollisionManager';
 import { PowerUp, PowerUpManager, PowerUpType } from './entities/PowerUp';
+import { SoundManager } from './audio/SoundManager';
+
+// Constants for asteroid size thresholds
+const SMALL_ASTEROID_MAX_RADIUS = 20;
+const MEDIUM_ASTEROID_MAX_RADIUS = 32;
 
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -17,6 +22,7 @@ export class Game {
     private inputHandler: InputHandler;
     private collisionManager: CollisionManager;
     private powerUpManager: PowerUpManager;
+    private soundManager: SoundManager;
 
     private score: number = 0;
     private lives: number = 3;
@@ -40,6 +46,7 @@ export class Game {
         this.player = new Player(canvas.width / 2, canvas.height / 2, this.powerUpManager);
         this.inputHandler = new InputHandler();
         this.collisionManager = new CollisionManager();
+        this.soundManager = new SoundManager();
 
         this.scoreElement = document.getElementById('score')!;
         this.livesElement = document.getElementById('lives')!;
@@ -47,6 +54,7 @@ export class Game {
         this.powerUpsElement = document.getElementById('powerUps')!;
 
         this.setupEventListeners();
+        this.setupMuteButton();
     }
 
     private setupEventListeners(): void {
@@ -55,6 +63,34 @@ export class Game {
                 this.restart();
             }
         });
+
+        // Initialize audio on first user interaction
+        const initAudio = (): void => {
+            this.soundManager.init();
+            this.soundManager.startBackgroundMusic();
+            window.removeEventListener('click', initAudio);
+            window.removeEventListener('keydown', initAudio);
+        };
+        window.addEventListener('click', initAudio);
+        window.addEventListener('keydown', initAudio);
+    }
+
+    private setupMuteButton(): void {
+        const muteBtn = document.getElementById('muteBtn');
+        if (muteBtn) {
+            this.updateMuteButtonState(muteBtn);
+            muteBtn.addEventListener('click', () => {
+                this.soundManager.toggleMute();
+                this.updateMuteButtonState(muteBtn);
+            });
+        }
+    }
+
+    private updateMuteButtonState(button: HTMLElement): void {
+        const isMuted = this.soundManager.getIsMuted();
+        button.classList.toggle('muted', isMuted);
+        button.setAttribute('aria-label', isMuted ? 'Unmute audio' : 'Mute audio');
+        button.textContent = isMuted ? '🔇' : '🔊';
     }
 
     public start(): void {
@@ -75,6 +111,7 @@ export class Game {
         this.asteroidSpawnTimer = 0;
         this.updateUI();
         this.gameOverElement.style.display = 'none';
+        this.soundManager.startBackgroundMusic();
     }
 
     private gameLoop(): void {
@@ -96,6 +133,7 @@ export class Game {
         if (this.inputHandler.isShooting() && this.player.canShoot()) {
             const newBullets = this.player.shoot();
             this.bullets.push(...newBullets);
+            this.soundManager.play('laser');
         }
 
         this.updateAsteroids();
@@ -161,6 +199,7 @@ export class Game {
 
                 this.lives--;
                 this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
                 this.asteroids.splice(i, 1);
 
                 if (this.lives <= 0) {
@@ -175,6 +214,7 @@ export class Game {
                 if (this.collisionManager.checkBulletAsteroidCollision(bullet, asteroid)) {
                     this.score += asteroid.getPoints();
                     this.createExplosion(asteroid.x, asteroid.y, '#888');
+                    this.playExplosionSound(asteroid);
 
                     // Spawn power-up with 15% chance
                     if (PowerUp.shouldSpawn()) {
@@ -193,11 +233,23 @@ export class Game {
         const type = powerUp.getType();
         this.powerUpManager.activate(type);
         powerUp.collect();
+        this.soundManager.play('powerUp');
 
-        // Create collection effect
-        const color = type === 'rapidFire' ? '#ff6b35' : type === 'shield' ? '#00d4ff' : '#a3e635';
+        // Create collection effect using PowerUp.COLORS
+        const color = PowerUp.COLORS[type];
         for (let i = 0; i < 10; i++) {
             this.particles.push(new Particle(this.player.x, this.player.y, color));
+        }
+    }
+
+    private playExplosionSound(asteroid: Asteroid): void {
+        const radius = asteroid.getRadius();
+        if (radius <= SMALL_ASTEROID_MAX_RADIUS) {
+            this.soundManager.play('explosionSmall');
+        } else if (radius <= MEDIUM_ASTEROID_MAX_RADIUS) {
+            this.soundManager.play('explosionMedium');
+        } else {
+            this.soundManager.play('explosionLarge');
         }
     }
 
@@ -223,6 +275,8 @@ export class Game {
     private endGame(): void {
         this.gameOver = true;
         this.gameOverElement.style.display = 'block';
+        this.soundManager.play('gameOver');
+        this.soundManager.stopBackgroundMusic();
     }
 
     private updateUI(): void {
@@ -238,8 +292,8 @@ export class Game {
 
         const activePowerUps = this.powerUpManager.getActivePowerUps();
 
-        // Clear existing indicators
-        this.powerUpsElement.innerHTML = '';
+        // Clear existing indicators safely
+        this.powerUpsElement.textContent = '';
 
         // Add indicators for each active power-up
         for (const powerUp of activePowerUps) {
@@ -249,10 +303,15 @@ export class Game {
             const name = this.getPowerUpDisplayName(powerUp.type);
             const seconds = Math.ceil(powerUp.remainingTime / 1000);
 
-            indicator.innerHTML = `
-                <span>${name}</span>
-                <span class="power-up-timer">${seconds}s</span>
-            `;
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = `${name} `;
+
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'power-up-timer';
+            timerSpan.textContent = `${seconds}s`;
+
+            indicator.appendChild(nameSpan);
+            indicator.appendChild(timerSpan);
 
             this.powerUpsElement.appendChild(indicator);
         }

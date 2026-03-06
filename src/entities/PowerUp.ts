@@ -23,7 +23,7 @@ export class PowerUp {
     private pulsePhase: number = 0;
 
     private static readonly DRIFT_SPEED = 0.8;
-    private static readonly COLORS: Record<PowerUpType, string> = {
+    public static readonly COLORS: Record<PowerUpType, string> = {
         rapidFire: '#ff6b35', // Orange
         shield: '#00d4ff',    // Cyan
         multiShot: '#a3e635'  // Lime
@@ -146,7 +146,6 @@ export class PowerUp {
  */
 export class PowerUpManager {
     private activePowerUps: Map<PowerUpType, ActivePowerUp> = new Map();
-    private shieldActive: boolean = false;
 
     public static readonly POWER_UP_DURATION = 10000; // 10 seconds in ms
     public static readonly RAPID_FIRE_MULTIPLIER = 2; // 2x fire rate
@@ -160,10 +159,6 @@ export class PowerUpManager {
             remainingTime: PowerUpManager.POWER_UP_DURATION,
             duration: PowerUpManager.POWER_UP_DURATION
         });
-
-        if (type === 'shield') {
-            this.shieldActive = true;
-        }
     }
 
     /**
@@ -175,9 +170,6 @@ export class PowerUpManager {
 
             if (powerUp.remainingTime <= 0) {
                 this.activePowerUps.delete(type);
-                if (type === 'shield') {
-                    this.shieldActive = false;
-                }
             }
         }
     }
@@ -201,8 +193,7 @@ export class PowerUpManager {
      * Returns true if shield absorbed the hit
      */
     public useShield(): boolean {
-        if (this.shieldActive) {
-            this.shieldActive = false;
+        if (this.isActive('shield')) {
             this.activePowerUps.delete('shield');
             return true;
         }
@@ -228,6 +219,5 @@ export class PowerUpManager {
      */
     public clear(): void {
         this.activePowerUps.clear();
-        this.shieldActive = false;
     }
 }

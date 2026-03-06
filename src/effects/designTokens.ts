@@ -1,0 +1,61 @@
+/**
+ * Design Tokens - Single source of truth for design values
+ * Extracted from stitch/design-tokens.css
+ */
+export const designTokens = {
+    colors: {
+        primary: '#57b0ff',
+        primaryGlow: 'rgba(87, 176, 255, 0.5)',
+        lime: '#7ee787',
+        cyan: '#00d4aa',
+        bgDark: '#0d1117',
+        bgLight: '#f5f7f8',
+        surface: '#161b22',
+        surfaceElevated: '#1c2128',
+        border: '#30363d',
+        borderSubtle: 'rgba(48, 54, 61, 0.5)',
+        textPrimary: '#e6edf3',
+        textSecondary: '#8b949e',
+        textMuted: '#6e7681',
+        success: '#7ee787',
+        warning: '#ffa657',
+        danger: '#f85149',
+        info: '#58a6ff',
+        bullet: '#ffeb3b',
+        bulletGlow: 'rgba(255, 235, 59, 0.8)',
+        explosion: '#f85149',
+        thruster: '#57b0ff',
+        spark: '#ffa657',
+    },
+    fonts: {
+        display: '"Space Grotesk", sans-serif',
+        body: '"DM Sans", sans-serif',
+        mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+    },
+    space: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+        '2xl': '3rem',
+    },
+    radius: {
+        sm: '0.125rem',
+        md: '0.25rem',
+        lg: '0.5rem',
+        full: '0.75rem',
+    },
+    shadows: {
+        glowPrimary: '0 0 10px rgba(87, 176, 255, 0.5)',
+        glowLime: '0 0 10px rgba(126, 231, 135, 0.4)',
+        card: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
+    },
+    transitions: {
+        fast: '150ms ease',
+        normal: '300ms ease',
+        slow: '500ms ease',
+    },
+} as const;
+
+export default designTokens;
