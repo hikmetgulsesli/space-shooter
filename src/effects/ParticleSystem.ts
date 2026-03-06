@@ -144,7 +144,7 @@ export class Particle {
                 ctx.arc(this.x, this.y, this.size * (0.5 + alpha * 0.5), 0, Math.PI * 2);
                 ctx.fill();
                 break;
-            case 'thruster':
+            case 'thruster': {
                 ctx.shadowBlur = 5;
                 const stretch = 1 + (1 - alpha) * 2;
                 ctx.beginPath();
@@ -156,7 +156,8 @@ export class Particle {
                 );
                 ctx.fill();
                 break;
-            case 'spark':
+            }
+            case 'spark': {
                 ctx.shadowBlur = 3;
                 const length = this.size * (1 + Math.abs(this.vx + this.vy) * 0.1);
                 const angle = Math.atan2(this.vy, this.vx);
@@ -164,6 +165,7 @@ export class Particle {
                 ctx.rotate(angle);
                 ctx.fillRect(-length / 2, -this.size / 2, length, this.size);
                 break;
+            }
         }
         
         ctx.restore();
