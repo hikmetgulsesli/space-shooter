@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<title>Astro Blaster Main Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    body { font-family: 'Space Grotesk', sans-serif; }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#00d4ff",
+            "background-light": "#f5f8f8",
+            "background-dark": "#1a1a1a",
+            "surface-dark": "#2a2a2a",
+            "border-dark": "#3a3a3a",
+          },
+          fontFamily: {
+            "display": ["Space Grotesk"]
+          },
+          borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center font-display text-slate-900 dark:text-slate-100 overflow-hidden relative">
+<div class="absolute inset-0 z-0 bg-cover bg-center opacity-40" data-alt="Deep space starry night sky background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRnRqhSHoUz--bUW6DPHu_ZQD3uCBslsvu4nNGD2HUJU7nM-QBGpNclj-PSZw663YiMz34NFqTWYN22VEGPpSJSNYgJuOWQ9A8mbziz6Rrd-7LeWcVDo6ZR2eZXhnWS-HRY7LkvMcZsuXPfWAkQJF3Etn5eg3ss0bGzxMXZyt8EUYuRGi9NwubgWYOwoL2ubKtEO9uLg7sIwRhkRVV07S-JyhaH_s7PBs6iVmSrGe3FPeagwNK_M_bqjFuOdDm0wIuD91LfIRzH7Y');"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-transparent to-background-dark/80"></div>
+<div class="relative z-10 w-full max-w-4xl border border-primary/40 rounded-lg p-1 bg-surface-dark/80 backdrop-blur-md shadow-[0_0_30px_rgba(0,212,255,0.1)]">
+<div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+<div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+<div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+<div class="px-8 py-16 flex flex-col items-center justify-center min-h-[600px]">
+<div class="flex flex-col items-center mb-16">
+<div class="size-12 text-primary mb-4 drop-shadow-[0_0_10px_rgba(0,212,255,0.8)]">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-[0_0_15px_rgba(0,212,255,0.5)] tracking-wider">ASTRO BLASTER</h1>
+<div class="h-0.5 w-64 bg-gradient-to-r from-transparent via-primary/50 to-transparent mt-4"></div>
+</div>
+<div class="flex flex-col gap-4 w-full max-w-sm">
+<button class="relative group flex items-center justify-center overflow-hidden rounded h-14 px-5 bg-border-dark/50 border border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-300 text-slate-200 hover:text-primary font-bold tracking-widest text-lg">
+<div class="absolute left-2 top-2 w-1 h-1 bg-primary/40 rounded-full group-hover:bg-primary transition-colors"></div>
+<div class="absolute right-2 top-2 w-1 h-1 bg-primary/40 rounded-full group-hover:bg-primary transition-colors"></div>
+<div class="absolute left-2 bottom-2 w-1 h-1 bg-primary/40 rounded-full group-hover:bg-primary transition-colors"></div>
+<div class="absolute right-2 bottom-2 w-1 h-1 bg-primary/40 rounded-full group-hover:bg-primary transition-colors"></div>
+<span class="z-10 flex items-center gap-2"><span class="material-symbols-outlined text-sm">rocket_launch</span> START GAME</span>
+</button>
+<button class="relative group flex items-center justify-center overflow-hidden rounded h-14 px-5 bg-border-dark/50 border border-border-dark hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 text-slate-300 hover:text-primary/80 font-bold tracking-widest">
+<div class="absolute left-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute right-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute left-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute right-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<span class="z-10 flex items-center gap-2"><span class="material-symbols-outlined text-sm">leaderboard</span> HIGH SCORES</span>
+</button>
+<button class="relative group flex items-center justify-center overflow-hidden rounded h-14 px-5 bg-border-dark/50 border border-border-dark hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 text-slate-300 hover:text-primary/80 font-bold tracking-widest">
+<div class="absolute left-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute right-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute left-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<div class="absolute right-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-primary/50 transition-colors"></div>
+<span class="z-10 flex items-center gap-2"><span class="material-symbols-outlined text-sm">settings</span> SETTINGS</span>
+</button>
+<button class="relative group flex items-center justify-center overflow-hidden rounded h-14 px-5 bg-border-dark/50 border border-border-dark hover:border-red-500/50 hover:bg-red-500/10 transition-all duration-300 text-slate-400 hover:text-red-400 font-bold tracking-widest mt-4">
+<div class="absolute left-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-red-500/50 transition-colors"></div>
+<div class="absolute right-2 top-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-red-500/50 transition-colors"></div>
+<div class="absolute left-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-red-500/50 transition-colors"></div>
+<div class="absolute right-2 bottom-2 w-1 h-1 bg-border-dark rounded-full group-hover:bg-red-500/50 transition-colors"></div>
+<span class="z-10 flex items-center gap-2"><span class="material-symbols-outlined text-sm">exit_to_app</span> QUIT</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-4 right-4 text-primary/40 font-mono text-xs tracking-wider font-semibold">
+      v1.4.2-BETA
+    </div>
+<div class="absolute bottom-4 left-4 text-slate-500 font-mono text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">terminal</span> SYS.READY
+    </div>
+</div>
+</body></html>
