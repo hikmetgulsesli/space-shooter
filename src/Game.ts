@@ -5,8 +5,13 @@ import { Particle, particlePool } from './effects/Particle';
 import { InputHandler } from './input/InputHandler';
 import { CollisionManager } from './collision/CollisionManager';
 import { PowerUp, PowerUpManager } from './entities/PowerUp';
+import { SoundManager } from './audio/SoundManager';
 import { FPSCounter } from './utils/FPSCounter';
 import { LoadingScreen } from './utils/LoadingScreen';
+
+// Constants for asteroid size thresholds
+const SMALL_ASTEROID_MAX_RADIUS = 20;
+const MEDIUM_ASTEROID_MAX_RADIUS = 32;
 
 /**
  * Game State Enum
@@ -32,6 +37,7 @@ export class Game {
     private inputHandler: InputHandler;
     private collisionManager: CollisionManager;
     private powerUpManager: PowerUpManager;
+    private soundManager: SoundManager;
     private fpsCounter: FPSCounter;
     private loadingScreen: LoadingScreen | null = null;
 
@@ -56,6 +62,7 @@ export class Game {
     private finalWaveElement: HTMLElement;
     private waveCompleteMessage: HTMLElement;
     private waveBonusMessage: HTMLElement;
+    private powerUpsElement: HTMLElement | null = null;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -66,6 +73,7 @@ export class Game {
         this.inputHandler = new InputHandler(canvas);
         this.collisionManager = new CollisionManager(true); // Enable spatial grid
         this.powerUpManager = new PowerUpManager();
+        this.soundManager = new SoundManager();
         this.fpsCounter = new FPSCounter();
 
         // Get UI elements
@@ -82,9 +90,10 @@ export class Game {
         this.finalWaveElement = document.getElementById('finalWave')!;
         this.waveCompleteMessage = document.getElementById('waveCompleteMessage')!;
         this.waveBonusMessage = document.getElementById('waveBonusMessage')!;
+        this.powerUpsElement = document.getElementById('powerUps');
 
         this.setupEventListeners();
-        this.setupButtonListeners();
+        this.setupMuteButton();
     }
 
     private setupEventListeners(): void {
@@ -100,6 +109,34 @@ export class Game {
                 this.resume();
             }
         });
+
+        // Initialize audio on first user interaction
+        const initAudio = (): void => {
+            this.soundManager.init();
+            this.soundManager.startBackgroundMusic();
+            window.removeEventListener('click', initAudio);
+            window.removeEventListener('keydown', initAudio);
+        };
+        window.addEventListener('click', initAudio);
+        window.addEventListener('keydown', initAudio);
+    }
+
+    private setupMuteButton(): void {
+        const muteBtn = document.getElementById('muteBtn');
+        if (muteBtn) {
+            this.updateMuteButtonState(muteBtn);
+            muteBtn.addEventListener('click', () => {
+                this.soundManager.toggleMute();
+                this.updateMuteButtonState(muteBtn);
+            });
+        }
+    }
+
+    private updateMuteButtonState(button: HTMLElement): void {
+        const isMuted = this.soundManager.getIsMuted();
+        button.classList.toggle('muted', isMuted);
+        button.setAttribute('aria-label', isMuted ? 'Unmute audio' : 'Mute audio');
+        button.textContent = isMuted ? '🔇' : '🔊';
     }
 
     private setupButtonListeners(): void {
@@ -246,7 +283,7 @@ export class Game {
         this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
 
         this.updateUI();
-        this.hideWaveCompleteMessage();
+        this.soundManager.startBackgroundMusic();
     }
 
     private restart(): void {
@@ -298,6 +335,7 @@ export class Game {
         if (this.inputHandler.isShooting() && this.player.canShoot()) {
             const newBullets = this.player.shoot();
             this.bullets.push(...newBullets);
+            this.soundManager.play('laser');
         }
 
         this.updateAsteroids();
@@ -382,6 +420,7 @@ export class Game {
 
                 this.lives--;
                 this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
                 this.asteroids.splice(i, 1);
 
                 if (this.lives <= 0) {
@@ -402,7 +441,8 @@ export class Game {
                     
                     if (isDestroyed) {
                         this.score += asteroid.getPoints();
-                        this.createExplosion(asteroid.x, asteroid.y, '#888');
+                        this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
+                        this.playExplosionSound(asteroid);
 
                         // Break apart if not small
                         const fragments = asteroid.breakApart();
@@ -416,7 +456,7 @@ export class Game {
                         this.asteroids.splice(i, 1);
                     } else {
                         // Tank asteroid hit but not destroyed - visual feedback
-                        this.createExplosion(asteroid.x, asteroid.y, '#6699ff');
+                        this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
                     }
                     break;
                 }
@@ -428,13 +468,25 @@ export class Game {
         const type = powerUp.getType();
         this.powerUpManager.activate(type);
         powerUp.collect();
+        this.soundManager.play('powerUp');
 
         // Create collection effect
-        const color = type === 'rapidFire' ? '#ff6b35' : type === 'shield' ? '#00d4ff' : '#a3e635';
+        const color = PowerUp.COLORS[type];
         for (let i = 0; i < 10; i++) {
             const particle = particlePool.acquire();
             particle.reset(this.player?.x ?? 0, this.player?.y ?? 0, color);
             this.particles.push(particle);
+        }
+    }
+
+    private playExplosionSound(asteroid: Asteroid): void {
+        const radius = asteroid.getRadius();
+        if (radius <= SMALL_ASTEROID_MAX_RADIUS) {
+            this.soundManager.play('explosionSmall');
+        } else if (radius <= MEDIUM_ASTEROID_MAX_RADIUS) {
+            this.soundManager.play('explosionMedium');
+        } else {
+            this.soundManager.play('explosionLarge');
         }
     }
 
@@ -463,22 +515,54 @@ export class Game {
         this.gameState = GameState.GAMEOVER;
         this.finalScoreElement.textContent = this.score.toString();
         this.showScreen(GameState.GAMEOVER);
-        this.inputHandler.showTouchControls(false);
+        this.soundManager.play('gameOver');
+        this.soundManager.stopBackgroundMusic();
     }
 
     private updateUI(): void {
         this.scoreElement.textContent = this.score.toString();
         this.livesElement.textContent = this.lives.toString();
         this.waveElement.textContent = '1';
+        this.renderPowerUpIndicators();
     }
 
-    private hideWaveCompleteMessage(): void {
-        if (this.waveCompleteMessage) {
-            this.waveCompleteMessage.style.display = 'none';
+    private renderPowerUpIndicators(): void {
+        if (!this.powerUpsElement) return;
+
+        const activePowerUps = this.powerUpManager.getActivePowerUps();
+
+        // Clear existing indicators safely
+        this.powerUpsElement.innerHTML = '';
+
+        // Add indicators for each active power-up
+        for (const powerUp of activePowerUps) {
+            const indicator = document.createElement('div');
+            indicator.className = 'power-up-indicator';
+
+            const name = this.getPowerUpDisplayName(powerUp.type);
+            const seconds = Math.ceil(powerUp.remainingTime / 1000);
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = `${name} `;
+
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'power-up-timer';
+            timerSpan.textContent = `${seconds}s`;
+
+            indicator.appendChild(nameSpan);
+            indicator.appendChild(timerSpan);
+
+            this.powerUpsElement.appendChild(indicator);
         }
-        if (this.waveBonusMessage) {
-            this.waveBonusMessage.style.display = 'none';
-        }
+    }
+
+    private getPowerUpDisplayName(type: string): string {
+        const names: Record<string, string> = {
+            'rapidFire': 'Rapid Fire',
+            'shield': 'Shield',
+            'multiShot': 'Multi Shot'
+        };
+        return names[type] || type;
     }
 
     private render(): void {

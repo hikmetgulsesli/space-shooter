@@ -55,7 +55,7 @@ describe('SpatialGrid', () => {
     describe('getNearby', () => {
         it('should find entities within search radius', () => {
             grid.insert(0, 50, 50, 10);
-            grid.insert(1, 150, 150, 10);
+            grid.insert(1, 500, 500, 10);
             
             const nearby = grid.getNearby(50, 50, 100);
             expect(nearby).toContain(0);

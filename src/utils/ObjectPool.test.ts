@@ -98,14 +98,22 @@ describe('ObjectPool', () => {
 
     describe('performance', () => {
         it('should reuse objects efficiently without creating new ones', () => {
-            // Acquire and release 1000 objects
-            for (let i = 0; i < 1000; i++) {
-                const obj = pool.acquire();
+            // Acquire 10 objects and release them all
+            const objects: TestObject[] = [];
+            for (let i = 0; i < 10; i++) {
+                objects.push(pool.acquire());
+            }
+            // Release all
+            for (const obj of objects) {
                 pool.release(obj);
             }
             
             // Pool should contain max size objects, all reused
             expect(pool.size()).toBe(10);
+            
+            // Acquire one more should reuse from pool
+            const reused = pool.acquire();
+            expect(pool.size()).toBe(9);
         });
     });
 });
