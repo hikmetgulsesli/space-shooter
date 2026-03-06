@@ -173,16 +173,28 @@ export class Game {
                 const bullet = this.bullets[j];
 
                 if (this.collisionManager.checkBulletAsteroidCollision(bullet, asteroid)) {
-                    this.score += asteroid.getPoints();
-                    this.createExplosion(asteroid.x, asteroid.y, '#888');
-
-                    // Spawn power-up with 15% chance
-                    if (PowerUp.shouldSpawn()) {
-                        this.powerUps.push(new PowerUp(asteroid.x, asteroid.y, PowerUp.getRandomType()));
-                    }
-
-                    this.asteroids.splice(i, 1);
                     this.bullets.splice(j, 1);
+                    
+                    const isDestroyed = asteroid.takeHit();
+                    
+                    if (isDestroyed) {
+                        this.score += asteroid.getPoints();
+                        this.createExplosion(asteroid.x, asteroid.y, '#888');
+
+                        // Break apart if not small
+                        const fragments = asteroid.breakApart();
+                        this.asteroids.push(...fragments);
+
+                        // Spawn power-up with 15% chance
+                        if (PowerUp.shouldSpawn()) {
+                            this.powerUps.push(new PowerUp(asteroid.x, asteroid.y, PowerUp.getRandomType()));
+                        }
+
+                        this.asteroids.splice(i, 1);
+                    } else {
+                        // Tank asteroid hit but not destroyed - visual feedback
+                        this.createExplosion(asteroid.x, asteroid.y, '#6699ff');
+                    }
                     break;
                 }
             }
