@@ -9,10 +9,26 @@ import { SoundManager } from './audio/SoundManager';
 import { FPSCounter } from './utils/FPSCounter';
 import { LoadingScreen } from './utils/LoadingScreen';
 import { EnemySpawnSystem } from './entities/enemies';
+import { ScoreManager } from './score/ScoreManager';
+import { WaveSystem } from './waves';
 
 // Constants for asteroid size thresholds
 const SMALL_ASTEROID_MAX_RADIUS = 20;
 const MEDIUM_ASTEROID_MAX_RADIUS = 32;
+
+// Default high scores data
+const DEFAULT_HIGH_SCORES = [
+    { rank: 1, name: 'ACE', score: 999999 },
+    { rank: 2, name: 'JAX', score: 850000 },
+    { rank: 3, name: 'NEO', score: 750000 },
+    { rank: 4, name: 'ZED', score: 600000 },
+    { rank: 5, name: 'MAX', score: 500000 },
+    { rank: 6, name: 'SAM', score: 450000 },
+    { rank: 7, name: 'LEO', score: 400000 },
+    { rank: 8, name: 'ROY', score: 350000 },
+    { rank: 9, name: 'BEN', score: 300000 },
+    { rank: 10, name: 'DAN', score: 250000 }
+];
 
 /**
  * Game State Enum
@@ -42,6 +58,8 @@ export class Game {
     private fpsCounter: FPSCounter;
     private loadingScreen: LoadingScreen | null = null;
     private enemySpawnSystem: EnemySpawnSystem;
+    private scoreManager: ScoreManager;
+    private waveSystem: WaveSystem;
 
     private score: number = 0;
     private lives: number = 3;
@@ -62,6 +80,10 @@ export class Game {
     private highScoreDisplay: HTMLElement;
     private finalScoreElement: HTMLElement;
     private finalWaveElement: HTMLElement;
+    private highScoreFinalElement: HTMLElement;
+    private totalGamesElement: HTMLElement;
+    private totalScoreElement: HTMLElement;
+    private newRecordIndicator: HTMLElement;
     private waveCompleteMessage: HTMLElement;
     private waveBonusMessage: HTMLElement;
     private powerUpsElement: HTMLElement | null = null;
@@ -72,32 +94,60 @@ export class Game {
         if (!ctx) throw new Error('Could not get canvas context');
         this.ctx = ctx;
 
+        this.scoreManager = new ScoreManager();
         this.inputHandler = new InputHandler(canvas);
         this.collisionManager = new CollisionManager(true); // Enable spatial grid
         this.powerUpManager = new PowerUpManager();
         this.soundManager = new SoundManager();
         this.fpsCounter = new FPSCounter();
         this.enemySpawnSystem = new EnemySpawnSystem(canvas);
+        this.waveSystem = new WaveSystem();
 
-        // Get UI elements
-        this.mainMenuScreen = document.getElementById('mainMenu')!;
-        this.gameScreen = document.getElementById('gameScreen')!;
-        this.pauseMenuScreen = document.getElementById('pauseMenu')!;
-        this.gameOverScreen = document.getElementById('gameOver')!;
-        this.highScoresScreen = document.getElementById('highScoresScreen')!;
-        this.scoreElement = document.getElementById('score')!;
-        this.livesElement = document.getElementById('lives')!;
-        this.waveElement = document.getElementById('wave')!;
-        this.highScoreDisplay = document.getElementById('highScoreDisplay')!;
-        this.finalScoreElement = document.getElementById('finalScore')!;
-        this.finalWaveElement = document.getElementById('finalWave')!;
-        this.waveCompleteMessage = document.getElementById('waveCompleteMessage')!;
-        this.waveBonusMessage = document.getElementById('waveBonusMessage')!;
+        // Get UI elements with null checks
+        this.mainMenuScreen = this.getElementOrThrow('mainMenu');
+        this.gameScreen = this.getElementOrThrow('gameScreen');
+        this.pauseMenuScreen = this.getElementOrThrow('pauseMenu');
+        this.gameOverScreen = this.getElementOrThrow('gameOver');
+        this.highScoresScreen = this.getElementOrThrow('highScoresScreen');
+        this.scoreElement = this.getElementOrThrow('score');
+        this.livesElement = this.getElementOrThrow('lives');
+        this.waveElement = this.getElementOrThrow('wave');
+        this.highScoreDisplay = this.getElementOrThrow('highScoreDisplay');
+        this.finalScoreElement = this.getElementOrThrow('finalScore');
+        this.finalWaveElement = this.getElementOrThrow('finalWave');
+        this.highScoreFinalElement = this.getElementOrThrow('highScoreFinal');
+        this.totalGamesElement = this.getElementOrThrow('totalGames');
+        this.totalScoreElement = this.getElementOrThrow('totalScore');
+        this.newRecordIndicator = this.getElementOrThrow('newRecordIndicator');
+        this.waveCompleteMessage = this.getElementOrThrow('waveCompleteMessage');
+        this.waveBonusMessage = this.getElementOrThrow('waveBonusMessage');
         this.powerUpsElement = document.getElementById('powerUps');
 
         this.setupEventListeners();
         this.setupMuteButton();
         this.setupButtonListeners();
+        this.updateHighScoreDisplay();
+    }
+
+    /**
+     * Helper method to get an element by ID or throw an error if not found
+     */
+    private getElementOrThrow(id: string): HTMLElement {
+        const element = document.getElementById(id);
+        if (!element) {
+            throw new Error(`UI element #${id} not found`);
+        }
+        return element;
+    }
+
+    private setupMuteButton(): void {
+        const muteBtn = document.getElementById('muteBtn');
+        if (muteBtn) {
+            muteBtn.addEventListener('click', () => {
+                this.soundManager.toggleMute();
+                muteBtn.textContent = this.soundManager.getIsMuted() ? '🔇' : '🔊';
+            });
+        }
     }
 
     private setupEventListeners(): void {
@@ -117,30 +167,11 @@ export class Game {
         // Initialize audio on first user interaction
         const initAudio = (): void => {
             this.soundManager.init();
-            this.soundManager.startBackgroundMusic();
             window.removeEventListener('click', initAudio);
             window.removeEventListener('keydown', initAudio);
         };
         window.addEventListener('click', initAudio);
         window.addEventListener('keydown', initAudio);
-    }
-
-    private setupMuteButton(): void {
-        const muteBtn = document.getElementById('muteBtn');
-        if (muteBtn) {
-            this.updateMuteButtonState(muteBtn);
-            muteBtn.addEventListener('click', () => {
-                this.soundManager.toggleMute();
-                this.updateMuteButtonState(muteBtn);
-            });
-        }
-    }
-
-    private updateMuteButtonState(button: HTMLElement): void {
-        const isMuted = this.soundManager.getIsMuted();
-        button.classList.toggle('muted', isMuted);
-        button.setAttribute('aria-label', isMuted ? 'Unmute audio' : 'Mute audio');
-        button.textContent = isMuted ? '🔇' : '🔊';
     }
 
     private setupButtonListeners(): void {
@@ -188,6 +219,12 @@ export class Game {
         }
     }
 
+    private updateHighScoreDisplay(): void {
+        if (this.highScoreDisplay) {
+            this.highScoreDisplay.textContent = this.scoreManager.getHighScore().toString();
+        }
+    }
+
     private showScreen(screen: GameState): void {
         this.mainMenuScreen.classList.remove('active');
         this.gameScreen.classList.remove('active');
@@ -219,7 +256,7 @@ export class Game {
     public async start(): Promise<void> {
         // Show loading screen
         this.loadingScreen = new LoadingScreen();
-        
+
         // Simulate initialization tasks
         await this.loadingScreen.simulateLoading([
             () => this.initializePool(),
@@ -229,6 +266,7 @@ export class Game {
 
         this.gameState = GameState.MENU;
         this.showScreen(GameState.MENU);
+        this.updateHighScoreDisplay();
     }
 
     private async initializePool(): Promise<void> {
@@ -257,27 +295,54 @@ export class Game {
         this.gameState = GameState.PLAYING;
         this.showScreen(GameState.PLAYING);
         this.inputHandler.showTouchControls(true);
+        this.soundManager.startBackgroundMusic();
         this.lastFrameTime = performance.now();
         this.gameLoop();
     }
 
     private showHighScores(): void {
         this.gameState = GameState.HIGHSCORES;
+        this.renderHighScoresTable();
         this.showScreen(GameState.HIGHSCORES);
+    }
+
+    private renderHighScoresTable(): void {
+        const tbody = document.getElementById('highScoresTableBody');
+        if (!tbody) return;
+
+        const highScore = this.scoreManager.getHighScore();
+        const playerInTop10 = highScore > 0 && highScore >= DEFAULT_HIGH_SCORES[9].score;
+
+        tbody.innerHTML = DEFAULT_HIGH_SCORES.map((entry, index) => {
+            const isTop3 = index < 3;
+            const isPlayer = playerInTop10 && highScore === entry.score;
+
+            return `
+                <tr class="hs-row ${isPlayer ? 'hs-current' : ''}">
+                    <td class="hs-rank">
+                        <span class="hs-rank-num ${isTop3 ? 'hs-top3' : ''}">${String(entry.rank).padStart(2, '0')}</span>
+                        ${isTop3 ? '<span class="hs-trophy">🏆</span>' : ''}
+                    </td>
+                    <td class="hs-name ${isTop3 ? 'hs-top3-name' : ''}">${entry.name}</td>
+                    <td class="hs-score ${isTop3 ? 'hs-top3-score' : ''}">${entry.score.toLocaleString()}</td>
+                </tr>
+            `;
+        }).join('');
     }
 
     private resetGame(): void {
         this.score = 0;
         this.lives = 3;
-        
+        this.waveSystem.reset();
+
         // Return bullets to pool
         this.bullets.forEach(b => bulletPool.release(b));
         this.bullets = [];
-        
+
         // Return particles to pool
         this.particles.forEach(p => particlePool.release(p));
         this.particles = [];
-        
+
         this.asteroids = [];
         this.powerUps = [];
         this.asteroidSpawnTimer = 0;
@@ -288,7 +353,7 @@ export class Game {
         this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
 
         this.updateUI();
-        this.soundManager.startBackgroundMusic();
+        this.hideWaveCompleteMessage();
     }
 
     private restart(): void {
@@ -300,6 +365,7 @@ export class Game {
         this.gameState = GameState.PAUSED;
         this.showScreen(GameState.PAUSED);
         this.inputHandler.showTouchControls(false);
+        this.soundManager.stopBackgroundMusic();
     }
 
     private resume(): void {
@@ -307,6 +373,7 @@ export class Game {
         this.gameState = GameState.PLAYING;
         this.showScreen(GameState.PLAYING);
         this.inputHandler.showTouchControls(true);
+        this.soundManager.startBackgroundMusic();
         this.lastFrameTime = performance.now();
         this.gameLoop();
     }
@@ -315,6 +382,8 @@ export class Game {
         this.gameState = GameState.MENU;
         this.showScreen(GameState.MENU);
         this.inputHandler.showTouchControls(false);
+        this.soundManager.stopBackgroundMusic();
+        this.updateHighScoreDisplay();
     }
 
     private gameLoop(): void {
@@ -327,7 +396,7 @@ export class Game {
         this.update(deltaTime);
         this.render();
         this.fpsCounter.update();
-        
+
         requestAnimationFrame(() => this.gameLoop());
     }
 
@@ -350,6 +419,7 @@ export class Game {
         this.updateEnemies();
         this.checkCollisions();
         this.spawnAsteroids();
+        this.updateWaveSystem();
 
         this.updateUI();
     }
@@ -390,7 +460,9 @@ export class Game {
     }
 
     private updateEnemies(): void {
-        this.enemySpawnSystem.update(this.player!.x, this.player!.y);
+        if (this.player) {
+            this.enemySpawnSystem.update(this.player.x, this.player.y);
+        }
     }
 
     private updatePowerUps(): void {
@@ -398,6 +470,43 @@ export class Game {
             powerUp.update(this.canvas);
             return powerUp.isActive();
         });
+    }
+
+    private updateWaveSystem(): void {
+        const activeAsteroids = this.asteroids.length;
+        const activeEnemies = this.enemySpawnSystem.getActiveEnemyCount();
+        const waveBonus = this.waveSystem.update(activeAsteroids, activeEnemies);
+
+        if (waveBonus > 0) {
+            this.score += waveBonus;
+            this.showWaveCompleteMessage(waveBonus);
+            this.soundManager.play('powerUp');
+        }
+
+        // Hide message when display duration expires
+        if (!this.waveSystem.shouldShowWaveCompleteMessage()) {
+            this.hideWaveCompleteMessage();
+        }
+    }
+
+    private showWaveCompleteMessage(bonus: number): void {
+        if (this.waveCompleteMessage) {
+            this.waveCompleteMessage.textContent = this.waveSystem.getWaveCompleteMessage();
+            this.waveCompleteMessage.style.display = 'block';
+        }
+        if (this.waveBonusMessage) {
+            this.waveBonusMessage.textContent = `+${bonus} BONUS`;
+            this.waveBonusMessage.style.display = 'block';
+        }
+    }
+
+    private hideWaveCompleteMessage(): void {
+        if (this.waveCompleteMessage) {
+            this.waveCompleteMessage.style.display = 'none';
+        }
+        if (this.waveBonusMessage) {
+            this.waveBonusMessage.style.display = 'none';
+        }
     }
 
     private checkCollisions(): void {
@@ -446,9 +555,9 @@ export class Game {
                     // Return bullet to pool
                     bulletPool.release(this.bullets[j]);
                     this.bullets.splice(j, 1);
-                    
+
                     const isDestroyed = asteroid.takeHit();
-                    
+
                     if (isDestroyed) {
                         this.score += asteroid.getPoints();
                         this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
@@ -570,13 +679,10 @@ export class Game {
     private spawnAsteroids(): void {
         this.asteroidSpawnTimer++;
 
-        if (this.asteroidSpawnTimer >= this.asteroidSpawnInterval) {
+        const spawnInterval = this.waveSystem.getAsteroidSpawnInterval();
+        if (this.asteroidSpawnTimer >= spawnInterval) {
             this.asteroidSpawnTimer = 0;
             this.asteroids.push(Asteroid.spawn(this.canvas));
-
-            if (this.asteroidSpawnInterval > 30) {
-                this.asteroidSpawnInterval -= 2;
-            }
         }
     }
 
@@ -590,7 +696,25 @@ export class Game {
 
     private endGame(): void {
         this.gameState = GameState.GAMEOVER;
+
+        // Record game stats
+        const wasNewHighScore = this.score > this.scoreManager.getHighScore();
+        this.scoreManager.recordGame(this.score, this.waveSystem.getCurrentWave());
+
+        // Update game over screen
         this.finalScoreElement.textContent = this.score.toString();
+        this.finalWaveElement.textContent = this.waveSystem.getCurrentWave().toString();
+        this.highScoreFinalElement.textContent = this.scoreManager.getHighScore().toString();
+        this.totalGamesElement.textContent = this.scoreManager.getTotalGamesPlayed().toString();
+        this.totalScoreElement.textContent = this.scoreManager.getTotalScoreAccumulated().toString();
+
+        // Show new record indicator if applicable
+        if (wasNewHighScore) {
+            this.newRecordIndicator.style.display = 'block';
+        } else {
+            this.newRecordIndicator.style.display = 'none';
+        }
+
         this.showScreen(GameState.GAMEOVER);
         this.soundManager.play('gameOver');
         this.soundManager.stopBackgroundMusic();
@@ -599,7 +723,7 @@ export class Game {
     private updateUI(): void {
         this.scoreElement.textContent = this.score.toString();
         this.livesElement.textContent = this.lives.toString();
-        this.waveElement.textContent = '1';
+        this.waveElement.textContent = this.waveSystem.getCurrentWave().toString();
         this.renderPowerUpIndicators();
     }
 
@@ -674,6 +798,8 @@ export class Game {
     getScore(): number { return this.score; }
     getLives(): number { return this.lives; }
     getGameState(): GameState { return this.gameState; }
+    getScoreManager(): ScoreManager { return this.scoreManager; }
+    getWaveSystem(): WaveSystem { return this.waveSystem; }
     isTouchEnabled(): boolean { return this.inputHandler.isTouchEnabled(); }
     getFPSCounter(): FPSCounter { return this.fpsCounter; }
     getCollisionManager(): CollisionManager { return this.collisionManager; }
