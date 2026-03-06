@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Astro Blaster Pause Menu Overlay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00d4ff",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f2023",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1));
+            background-size: 100% 4px;
+        }
+        .grid-bg {
+            background-image: linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-body overflow-hidden h-screen w-screen selection:bg-primary selection:text-background-dark">
+<!-- Blurred Game Background -->
+<div class="absolute inset-0 z-0">
+<img alt="Blurred deep space starfield" class="w-full h-full object-cover blur-md scale-105 opacity-60" data-alt="Blurred dark space scene with stars" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKOsBZ2_BBYHL00-J3QlRDgpi7dtA7yKteHny7hutmzMy08y-XKcE6XhtduqP7AZ7GXLU8562VCB_oWcpd2IqM3RjLqkpLSgZcZHWvdjj2dNXrFsTvSM2BXQga5tsCoNS_1kOrTrxPytf4yZ3OdZ2QY2Cw--x-ZlAclazlSs7xNuzPTSA3chABvBz3UaM4qJCE02R956ME1iZUU0bETMO10DUReeFd0LBXK3uEVhHavggzAEh8ledYZlG30SofZSy63OX7ZoKisXA"/>
+<!-- Deep Charcoal Overlay -->
+<div class="absolute inset-0 bg-[#0d1117]/80"></div>
+</div>
+<!-- Effects Overlays -->
+<div class="absolute inset-0 z-0 grid-bg opacity-50 pointer-events-none"></div>
+<div class="absolute inset-0 z-0 scanlines pointer-events-none mix-blend-overlay"></div>
+<!-- Main UI Container -->
+<div class="relative z-10 flex h-full w-full flex-col items-center justify-center p-6">
+<!-- Industrial Panel -->
+<div class="relative flex w-full max-w-[540px] flex-col bg-background-dark/95 border border-primary/40 backdrop-blur-sm p-10 shadow-[0_0_30px_rgba(0,212,255,0.05)]">
+<!-- Technical Corner Brackets -->
+<div class="absolute -left-[1px] -top-[1px] h-6 w-6 border-l-2 border-t-2 border-primary"></div>
+<div class="absolute -right-[1px] -top-[1px] h-6 w-6 border-r-2 border-t-2 border-primary"></div>
+<div class="absolute -left-[1px] -bottom-[1px] h-6 w-6 border-l-2 border-b-2 border-primary"></div>
+<div class="absolute -right-[1px] -bottom-[1px] h-6 w-6 border-r-2 border-b-2 border-primary"></div>
+<!-- Panel Header Area -->
+<div class="flex flex-col items-center mb-10 border-b border-primary/20 pb-6 relative">
+<!-- Decorative top line -->
+<div class="absolute top-0 w-1/3 h-[1px] bg-primary/50"></div>
+<p class="font-mono text-primary/60 text-xs tracking-[0.2em] mb-2 uppercase">System Interrupt // 0x4A2</p>
+<h1 class="font-display text-primary tracking-widest text-4xl md:text-5xl font-bold leading-tight text-center glow-text">PAUSED</h1>
+</div>
+<!-- Menu Options Container -->
+<div class="flex flex-col gap-3 w-full">
+<!-- Resume Button -->
+<button class="group relative flex w-full items-center justify-between border border-primary/20 bg-primary/5 px-6 py-4 text-left font-display tracking-[0.1em] text-primary/80 transition-all hover:border-amber-500 hover:bg-amber-500/10 hover:text-amber-500 hover:shadow-[inset_4px_0_0_#f59e0b]">
+<span class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[20px] opacity-70 group-hover:opacity-100 transition-opacity">play_arrow</span>
+<span class="text-lg font-semibold">RESUME</span>
+</span>
+<span class="font-mono text-xs opacity-0 transition-opacity group-hover:opacity-100 text-amber-500/70">[ENTER]</span>
+</button>
+<!-- Restart Button -->
+<button class="group relative flex w-full items-center justify-between border border-primary/20 bg-primary/5 px-6 py-4 text-left font-display tracking-[0.1em] text-primary/80 transition-all hover:border-amber-500 hover:bg-amber-500/10 hover:text-amber-500 hover:shadow-[inset_4px_0_0_#f59e0b]">
+<span class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[20px] opacity-70 group-hover:opacity-100 transition-opacity">replay</span>
+<span class="text-lg font-semibold">RESTART</span>
+</span>
+<span class="font-mono text-xs opacity-0 transition-opacity group-hover:opacity-100 text-amber-500/70">[R]</span>
+</button>
+<!-- Settings Button -->
+<button class="group relative flex w-full items-center justify-between border border-primary/20 bg-primary/5 px-6 py-4 text-left font-display tracking-[0.1em] text-primary/80 transition-all hover:border-amber-500 hover:bg-amber-500/10 hover:text-amber-500 hover:shadow-[inset_4px_0_0_#f59e0b]">
+<span class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[20px] opacity-70 group-hover:opacity-100 transition-opacity">settings</span>
+<span class="text-lg font-semibold">SETTINGS</span>
+</span>
+<span class="font-mono text-xs opacity-0 transition-opacity group-hover:opacity-100 text-amber-500/70">[S]</span>
+</button>
+<!-- Quit Button -->
+<button class="group relative flex w-full items-center justify-between border border-primary/20 bg-primary/5 px-6 py-4 text-left font-display tracking-[0.1em] text-primary/80 transition-all hover:border-amber-500 hover:bg-amber-500/10 hover:text-amber-500 hover:shadow-[inset_4px_0_0_#f59e0b] mt-4">
+<span class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[20px] opacity-70 group-hover:opacity-100 transition-opacity">logout</span>
+<span class="text-lg font-semibold">QUIT TO MENU</span>
+</span>
+<span class="font-mono text-xs opacity-0 transition-opacity group-hover:opacity-100 text-amber-500/70">[ESC]</span>
+</button>
+</div>
+<!-- Footer decorative element -->
+<div class="mt-8 pt-4 border-t border-primary/10 flex justify-between items-center text-primary/40 font-mono text-[10px] tracking-widest">
+<span>V.1.04.88</span>
+<span class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+                    STATUS: OFFLINE
+                </span>
+</div>
+</div>
+</div>
+</body></html>

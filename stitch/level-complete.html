@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Astro Blaster Level Victory Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#00ccff",
+          "background-light": "#f5f8f8",
+          "background-dark": "#0f1f23",
+          "secondary": "#32cd32",
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: #1a1a1a;
+    background-image: radial-gradient(circle at 50% 0%, rgba(0, 212, 255, 0.15) 0%, transparent 50%), radial-gradient(circle at 50% 100%, rgba(50, 205, 50, 0.1) 0%, transparent 50%);
+    position: relative;
+  }
+  body::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body class="font-display text-slate-100 bg-background-dark min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-8">
+<!-- Corner Brackets -->
+<div class="absolute top-8 left-8 w-16 h-16 border-t-2 border-l-2 border-primary/50 pointer-events-none"></div>
+<div class="absolute top-8 right-8 w-16 h-16 border-t-2 border-r-2 border-primary/50 pointer-events-none"></div>
+<div class="absolute bottom-8 left-8 w-16 h-16 border-b-2 border-l-2 border-primary/50 pointer-events-none"></div>
+<div class="absolute bottom-8 right-8 w-16 h-16 border-b-2 border-r-2 border-primary/50 pointer-events-none"></div>
+<div class="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center gap-12">
+<!-- Header -->
+<div class="text-center flex flex-col gap-4 relative">
+<div class="absolute -inset-4 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 blur-2xl -z-10 rounded-full"></div>
+<p class="text-primary text-xl font-bold tracking-[0.2em] uppercase">Astro Blaster</p>
+<h1 class="text-6xl md:text-8xl font-black leading-tight tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary drop-shadow-[0_0_15px_rgba(0,204,255,0.5)]">LEVEL COMPLETE</h1>
+</div>
+<!-- Rank Stars -->
+<div class="flex gap-6 p-6">
+<span class="material-symbols-outlined text-6xl text-primary drop-shadow-[0_0_10px_rgba(0,204,255,0.8)]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-7xl text-primary drop-shadow-[0_0_15px_rgba(0,204,255,0.8)] -translate-y-4" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-6xl text-primary/30" style="font-variation-settings: 'FILL' 0;">star</span>
+</div>
+<!-- Stats Panel -->
+<div class="w-full flex flex-col md:flex-row gap-6 p-6 border border-primary/30 bg-black/40 backdrop-blur-sm rounded-lg relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50"></div>
+<div class="flex-1 flex flex-col items-center justify-center p-6 border border-primary/20 rounded bg-black/60 relative group-hover:border-primary/50 transition-colors">
+<p class="text-primary/70 text-sm font-bold tracking-widest mb-2 uppercase">Score Bonus</p>
+<p class="text-secondary text-4xl font-black tracking-tight drop-shadow-[0_0_8px_rgba(50,205,50,0.5)]">+5000</p>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center p-6 border border-primary/20 rounded bg-black/60 relative group-hover:border-primary/50 transition-colors">
+<p class="text-primary/70 text-sm font-bold tracking-widest mb-2 uppercase">Time</p>
+<p class="text-white text-4xl font-black tracking-tight drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">02:45</p>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center p-6 border border-primary/20 rounded bg-black/60 relative group-hover:border-primary/50 transition-colors">
+<p class="text-primary/70 text-sm font-bold tracking-widest mb-2 uppercase">Accuracy</p>
+<p class="text-primary text-4xl font-black tracking-tight drop-shadow-[0_0_8px_rgba(0,204,255,0.5)]">92%</p>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-6 mt-8 w-full justify-center">
+<button class="relative group px-8 py-4 bg-secondary/10 hover:bg-secondary/20 border-2 border-secondary text-secondary font-bold text-xl tracking-widest uppercase transition-all overflow-hidden min-w-[280px]">
+<span class="relative z-10 flex items-center justify-center gap-3">
+          Next Sector <span class="material-symbols-outlined">rocket_launch</span>
+</span>
+<div class="absolute inset-0 bg-secondary/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+</button>
+<button class="relative group px-8 py-4 bg-primary/5 hover:bg-primary/10 border border-primary/50 text-primary font-bold text-xl tracking-widest uppercase transition-all overflow-hidden min-w-[280px]">
+<span class="relative z-10 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">grid_view</span> System Menu
+        </span>
+</button>
+</div>
+</div>
+</body></html>

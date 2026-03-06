@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Astro Blaster High Scores</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00d4ff",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#050a0b",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .crt-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        .neon-text {
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5), 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+        .neon-border {
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2), inset 0 0 10px rgba(0, 212, 255, 0.1);
+        }
+        .corner-brackets {
+            position: relative;
+        }
+        .corner-brackets::before, .corner-brackets::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-color: rgba(0, 212, 255, 0.5);
+            border-style: solid;
+            pointer-events: none;
+        }
+        .corner-brackets::before {
+            top: -1px;
+            left: -1px;
+            border-width: 1px 0 0 1px;
+        }
+        .corner-brackets::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 1px 1px 0;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden">
+<!-- Subtle star background -->
+<div class="absolute inset-0 z-0 opacity-20" data-alt="Deep space star background" style="background-image: radial-gradient(#00d4ff 1px, transparent 1px); background-size: 50px 50px;"></div>
+<!-- CRT Overlay -->
+<div class="absolute inset-0 z-50 crt-overlay mix-blend-overlay"></div>
+<div class="relative z-10 flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 sm:px-10 lg:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col w-full max-w-[960px] flex-1 mt-8">
+<header class="flex items-center justify-center whitespace-nowrap mb-12 relative">
+<div class="absolute left-0 right-0 h-px bg-primary/20 top-1/2 -translate-y-1/2 -z-10"></div>
+<div class="bg-background-dark px-6 py-2 border border-primary/30 rounded flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">rocket_launch</span>
+<h2 class="text-primary text-xl font-bold tracking-widest uppercase neon-text">Astro Blaster</h2>
+</div>
+</header>
+<div class="flex flex-col items-center justify-center mb-10 gap-2">
+<p class="text-primary/70 text-sm tracking-[0.2em] uppercase">Global Rankings</p>
+<h1 class="text-white text-5xl sm:text-6xl font-black leading-tight tracking-[-0.02em] neon-text uppercase">High Scores</h1>
+</div>
+<div class="px-4 py-3 @container w-full">
+<div class="flex overflow-hidden border border-primary/30 bg-background-dark/80 backdrop-blur-sm neon-border corner-brackets p-1 rounded-sm">
+<table class="flex-1 w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary/10 border-b border-primary/30">
+<th class="px-6 py-4 text-primary text-xs tracking-widest font-bold uppercase w-24">Rank</th>
+<th class="px-6 py-4 text-primary text-xs tracking-widest font-bold uppercase">Pilot</th>
+<th class="px-6 py-4 text-primary text-xs tracking-widest font-bold uppercase text-right">Score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-primary/10 bg-primary/5 hover:bg-primary/10 transition-colors group">
+<td class="px-6 py-4 text-white text-lg font-bold flex items-center gap-2">
+<span class="text-primary">01</span>
+<span class="material-symbols-outlined text-primary text-xl neon-text">emoji_events</span>
+</td>
+<td class="px-6 py-4 text-white text-xl font-bold tracking-wider group-hover:text-primary transition-colors">ACE</td>
+<td class="px-6 py-4 text-primary text-xl font-bold tracking-widest text-right neon-text">999,999</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-400 text-lg font-medium group-hover:text-primary/70 transition-colors">02</td>
+<td class="px-6 py-4 text-slate-200 text-lg tracking-wider group-hover:text-white transition-colors">JAX</td>
+<td class="px-6 py-4 text-slate-200 text-lg font-bold tracking-widest text-right group-hover:text-primary/80 transition-colors">850,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-400 text-lg font-medium group-hover:text-primary/70 transition-colors">03</td>
+<td class="px-6 py-4 text-slate-200 text-lg tracking-wider group-hover:text-white transition-colors">NEO</td>
+<td class="px-6 py-4 text-slate-200 text-lg font-bold tracking-widest text-right group-hover:text-primary/80 transition-colors">750,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">04</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">ZED</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">600,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">05</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">MAX</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">500,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">06</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">SAM</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">450,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">07</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">LEO</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">400,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">08</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">ROY</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">350,000</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">09</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">BEN</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">300,000</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 text-slate-500 text-md font-medium group-hover:text-primary/50 transition-colors">10</td>
+<td class="px-6 py-4 text-slate-300 text-md tracking-wider group-hover:text-white transition-colors">DAN</td>
+<td class="px-6 py-4 text-slate-300 text-md font-medium tracking-widest text-right group-hover:text-primary/60 transition-colors">250,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="flex px-4 py-8 justify-between items-center w-full">
+<button class="flex items-center gap-2 px-6 py-3 border border-primary/50 bg-background-dark/50 text-primary hover:bg-primary/20 hover:neon-border transition-all rounded-sm uppercase tracking-widest text-sm font-bold group">
+<span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back_ios</span>
+                            Back to Menu
+                        </button>
+<div class="text-primary/30 text-xs tracking-widest font-mono flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary/50 animate-pulse"></span>
+                            NETWORK: ONLINE
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

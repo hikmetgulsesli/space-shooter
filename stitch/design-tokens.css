@@ -1,123 +1,151 @@
 /**
- * Space Shooter - Design Tokens
- * Aesthetic: Industrial CLI Dashboard
- * Palette: DevTool / CLI Dashboard (dark mode)
+ * Space Shooter Design Tokens
+ * Retro Arcade - DevTool/CLI Dashboard Theme
+ * Extracted from Stitch designs
  */
 
 :root {
   /* Primary Colors */
-  --color-primary: #00d4ff;
-  --color-primary-rgb: 0, 212, 255;
-  
-  /* Accent Colors */
-  --color-accent: #f59e0b;
-  --color-accent-amber: #ffaa00;
-  --color-success: #22c55e;
-  --color-error: #ef4444;
-  --color-warning: #f59e0b;
+  --color-primary: #57b0ff;
+  --color-primary-glow: rgba(87, 176, 255, 0.5);
+  --color-lime: #7ee787;
+  --color-cyan: #00d4aa;
   
   /* Background Colors */
-  --color-bg-primary: #0d1117;
-  --color-bg-secondary: #161b22;
-  --color-bg-dark: #0d0d0d;
-  
-  /* Surface Colors */
+  --color-bg-dark: #0d1117;
+  --color-bg-light: #f5f7f8;
   --color-surface: #161b22;
-  --color-surface-border: #30363d;
-  --color-surface-hover: #21262d;
+  --color-surface-elevated: #1c2128;
+  
+  /* Border & Divider */
+  --color-border: #30363d;
+  --color-border-subtle: rgba(48, 54, 61, 0.5);
   
   /* Text Colors */
-  --color-text-primary: #f0f6fc;
+  --color-text-primary: #e6edf3;
   --color-text-secondary: #8b949e;
   --color-text-muted: #6e7681;
-  --color-text-inverse: #0d1117;
+  
+  /* Accent Colors */
+  --color-success: #7ee787;
+  --color-warning: #ffa657;
+  --color-danger: #f85149;
+  --color-info: #58a6ff;
   
   /* Typography */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'Fira Code', 'JetBrains Mono', monospace;
-  
-  /* Font Sizes */
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
-  --text-6xl: 3.75rem;
-  --text-7xl: 4.5rem;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   
   /* Spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
   
   /* Border Radius */
   --radius-sm: 0.125rem;
   --radius-md: 0.25rem;
   --radius-lg: 0.5rem;
-  --radius-xl: 1rem;
-  --radius-full: 9999px;
+  --radius-full: 0.75rem;
   
-  /* Shadows */
-  --shadow-neon: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
-  --shadow-accent-glow: 0 0 8px rgba(245, 158, 11, 0.6);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  /* Shadows & Glows */
+  --shadow-glow-primary: 0 0 10px var(--color-primary-glow);
+  --shadow-glow-lime: 0 0 10px rgba(126, 231, 135, 0.4);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
   
   /* Grid Pattern */
-  --grid-color: rgba(48, 54, 61, 0.2);
   --grid-size: 40px;
+  --grid-color: #30363d;
 }
 
+/* Dark Mode (Default for Space Shooter) */
 .dark {
-  color-scheme: dark;
+  --color-bg: var(--color-bg-dark);
+  --color-text: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
 }
 
 /* Utility Classes */
-.text-primary { color: var(--color-primary); }
-.text-accent { color: var(--color-accent); }
-.text-muted { color: var(--color-text-secondary); }
-
-.bg-surface { background-color: var(--color-surface); }
-.bg-primary { background-color: var(--color-bg-primary); }
-
-.font-display { font-family: var(--font-display); }
-.font-mono { font-family: var(--font-mono); }
-
-.glow-neon { text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
-.glow-accent { text-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
-
-.border-tech { border-color: var(--color-surface-border); }
-
-/* Industrial HUD Elements */
-.hud-corner {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  border-color: rgba(0, 212, 255, 0.4);
-  opacity: 0.5;
+.glow-text {
+  text-shadow: var(--shadow-glow-primary);
 }
 
-.hud-corner-tl { border-top: 2px solid; border-left: 2px solid; top: 2rem; left: 2rem; }
-.hud-corner-tr { border-top: 2px solid; border-right: 2px solid; top: 2rem; right: 2rem; }
-.hud-corner-bl { border-bottom: 2px solid; border-left: 2px solid; bottom: 2rem; left: 2rem; }
-.hud-corner-br { border-bottom: 2px solid; border-right: 2px solid; bottom: 2rem; right: 2rem; }
+.glow-lime {
+  text-shadow: var(--shadow-glow-lime);
+}
 
-/* Grid Background */
-.bg-grid {
+.grid-bg {
   background-image: 
-    radial-gradient(circle at 50% 50%, rgba(0, 212, 255, 0.05) 0%, transparent 60%),
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  background-size: 100% 100%, var(--grid-size) var(--grid-size), var(--grid-size) var(--grid-size);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+/* CLI Corner Borders */
+.cli-border {
+  position: relative;
+}
+
+.cli-border::before,
+.cli-border::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--color-primary);
+  border-style: solid;
+}
+
+.cli-border::before {
+  top: 0;
+  left: 0;
+  border-width: 1px 0 0 1px;
+}
+
+.cli-border::after {
+  bottom: 0;
+  right: 0;
+  border-width: 0 1px 1px 0;
+}
+
+/* Scanline Effect */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Animation Keyframes */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

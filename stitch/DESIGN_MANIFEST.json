@@ -3,8 +3,8 @@
   "projectName": "space-shooter",
   "deviceType": "DESKTOP",
   "designSystem": {
-    "aesthetic": "industrial",
-    "palette": "DevTool / CLI Dashboard (dark mode)",
+    "aesthetic": "retro-arcade",
+    "palette": "DevTool / CLI Dashboard (dark cyan/lime space theme)",
     "headingFont": "Space Grotesk",
     "bodyFont": "DM Sans",
     "iconLibrary": "Lucide React"
@@ -12,7 +12,7 @@
   "screens": [
     {
       "id": "main-menu",
-      "title": "Asteroid Defender Main Menu",
+      "title": "Asteroid Blaster Main Menu Screen",
       "html": "main-menu.html",
       "screenshot": "main-menu.png",
       "type": "menu"
@@ -40,19 +40,54 @@
     },
     {
       "id": "game-hud",
-      "title": "Astro Blaster Industrial HUD Overlay",
+      "title": "Astro Blaster Retro Vector HUD Overlay",
       "html": "game-hud.html",
       "screenshot": "game-hud.png",
       "type": "hud"
     },
     {
-      "id": "game-over-screen",
+      "id": "pause-menu",
+      "title": "Astro Blaster Pause Menu Overlay",
+      "html": "pause-menu.html",
+      "screenshot": "pause-menu.png",
+      "type": "pause"
+    },
+    {
+      "id": "game-over",
       "title": "Astro Blaster Game Over Screen",
+      "html": "game-over.html",
+      "screenshot": "game-over.png",
+      "type": "game-over"
+    },
+    {
+      "id": "game-over-screen",
+      "title": "Astro Blaster Game Over Screen (Alt)",
       "html": "game-over-screen.html",
       "screenshot": "game-over-screen.png",
       "type": "game-over"
+    },
+    {
+      "id": "high-scores",
+      "title": "Astro Blaster High Scores Leaderboard",
+      "html": "high-scores.html",
+      "screenshot": "high-scores.png",
+      "type": "leaderboard"
+    },
+    {
+      "id": "settings",
+      "title": "Astro Blaster Technical Settings Menu",
+      "html": "settings.html",
+      "screenshot": "settings.png",
+      "type": "settings"
+    },
+    {
+      "id": "level-complete",
+      "title": "Astro Blaster Level Victory Screen",
+      "html": "level-complete.html",
+      "screenshot": "level-complete.png",
+      "type": "victory"
     }
   ],
-  "totalScreens": 6,
-  "generatedAt": "2025-03-06T21:39:00Z"
+  "totalScreens": 11,
+  "generatedAt": "2025-03-06T21:57:00Z"
 }
