@@ -14,6 +14,20 @@ import { WaveSystem } from './waves';
 const SMALL_ASTEROID_MAX_RADIUS = 20;
 const MEDIUM_ASTEROID_MAX_RADIUS = 32;
 
+// Default high scores data
+const DEFAULT_HIGH_SCORES = [
+    { rank: 1, name: 'ACE', score: 999999 },
+    { rank: 2, name: 'JAX', score: 850000 },
+    { rank: 3, name: 'NEO', score: 750000 },
+    { rank: 4, name: 'ZED', score: 600000 },
+    { rank: 5, name: 'MAX', score: 500000 },
+    { rank: 6, name: 'SAM', score: 450000 },
+    { rank: 7, name: 'LEO', score: 400000 },
+    { rank: 8, name: 'ROY', score: 350000 },
+    { rank: 9, name: 'BEN', score: 300000 },
+    { rank: 10, name: 'DAN', score: 250000 }
+];
+
 /**
  * Game State Enum
  * Defines all possible states of the game
@@ -80,28 +94,39 @@ export class Game {
         this.powerUpManager = new PowerUpManager();
         this.waveSystem = new WaveSystem();
 
-        // Get UI elements
-        this.mainMenuScreen = document.getElementById('mainMenu')!;
-        this.gameScreen = document.getElementById('gameScreen')!;
-        this.pauseMenuScreen = document.getElementById('pauseMenu')!;
-        this.gameOverScreen = document.getElementById('gameOver')!;
-        this.highScoresScreen = document.getElementById('highScoresScreen')!;
-        this.scoreElement = document.getElementById('score')!;
-        this.livesElement = document.getElementById('lives')!;
-        this.waveElement = document.getElementById('wave')!;
-        this.highScoreDisplay = document.getElementById('highScoreDisplay')!;
-        this.finalScoreElement = document.getElementById('finalScore')!;
-        this.finalWaveElement = document.getElementById('finalWave')!;
-        this.highScoreFinalElement = document.getElementById('highScoreFinal')!;
-        this.totalGamesElement = document.getElementById('totalGames')!;
-        this.totalScoreElement = document.getElementById('totalScore')!;
-        this.newRecordIndicator = document.getElementById('newRecordIndicator')!;
-        this.waveCompleteMessage = document.getElementById('waveCompleteMessage')!;
-        this.waveBonusMessage = document.getElementById('waveBonusMessage')!;
+        // Get UI elements with null checks
+        this.mainMenuScreen = this.getElementOrThrow('mainMenu');
+        this.gameScreen = this.getElementOrThrow('gameScreen');
+        this.pauseMenuScreen = this.getElementOrThrow('pauseMenu');
+        this.gameOverScreen = this.getElementOrThrow('gameOver');
+        this.highScoresScreen = this.getElementOrThrow('highScoresScreen');
+        this.scoreElement = this.getElementOrThrow('score');
+        this.livesElement = this.getElementOrThrow('lives');
+        this.waveElement = this.getElementOrThrow('wave');
+        this.highScoreDisplay = this.getElementOrThrow('highScoreDisplay');
+        this.finalScoreElement = this.getElementOrThrow('finalScore');
+        this.finalWaveElement = this.getElementOrThrow('finalWave');
+        this.highScoreFinalElement = this.getElementOrThrow('highScoreFinal');
+        this.totalGamesElement = this.getElementOrThrow('totalGames');
+        this.totalScoreElement = this.getElementOrThrow('totalScore');
+        this.newRecordIndicator = this.getElementOrThrow('newRecordIndicator');
+        this.waveCompleteMessage = this.getElementOrThrow('waveCompleteMessage');
+        this.waveBonusMessage = this.getElementOrThrow('waveBonusMessage');
 
         this.setupEventListeners();
         this.setupButtonListeners();
         this.updateHighScoreDisplay();
+    }
+
+    /**
+     * Helper method to get an element by ID or throw an error if not found
+     */
+    private getElementOrThrow(id: string): HTMLElement {
+        const element = document.getElementById(id);
+        if (!element) {
+            throw new Error(`UI element #${id} not found`);
+        }
+        return element;
     }
 
     private setupEventListeners(): void {
@@ -231,24 +256,12 @@ export class Game {
         const tbody = document.getElementById('highScoresTableBody');
         if (!tbody) return;
 
-        // Generate default high scores
-        const defaultScores = [
-            { rank: 1, name: 'ACE', score: 999999 },
-            { rank: 2, name: 'JAX', score: 850000 },
-            { rank: 3, name: 'NEO', score: 750000 },
-            { rank: 4, name: 'ZED', score: 600000 },
-            { rank: 5, name: 'MAX', score: 500000 },
-            { rank: 6, name: 'SAM', score: 450000 },
-            { rank: 7, name: 'LEO', score: 400000 },
-            { rank: 8, name: 'ROY', score: 350000 },
-            { rank: 9, name: 'BEN', score: 300000 },
-            { rank: 10, name: 'DAN', score: 250000 }
-        ];
+        // Use default high scores constant
 
         const highScore = this.scoreManager.getHighScore();
-        const playerInTop10 = highScore > 0 && highScore >= defaultScores[9].score;
+        const playerInTop10 = highScore > 0 && highScore >= DEFAULT_HIGH_SCORES[9].score;
 
-        tbody.innerHTML = defaultScores.map((entry, index) => {
+        tbody.innerHTML = DEFAULT_HIGH_SCORES.map((entry, index) => {
             const isTop3 = index < 3;
             const isPlayer = playerInTop10 && highScore === entry.score;
             
