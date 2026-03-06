@@ -6,7 +6,7 @@ import { InputHandler } from './input/InputHandler';
 import { CollisionManager } from './collision/CollisionManager';
 import { PowerUp, PowerUpManager, PowerUpType } from './entities/PowerUp';
 import { SoundManager } from './audio/SoundManager';
-import { EnemySpawnSystem, Enemy, EnemyBullet } from './entities/enemies';
+import { EnemySpawnSystem } from './entities/enemies';
 
 // Constants for asteroid size thresholds
 const SMALL_ASTEROID_MAX_RADIUS = 20;
