@@ -14,6 +14,12 @@ export class Particle {
     private size: number = 2;
     private active: boolean = false;
 
+    constructor(x?: number, y?: number, color?: string) {
+        if (x !== undefined && y !== undefined && color !== undefined) {
+            this.reset(x, y, color);
+        }
+    }
+
     /**
      * Reset the particle for reuse from pool
      */

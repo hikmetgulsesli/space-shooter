@@ -1,16 +1,65 @@
-=== US-001: Design System & Visual Foundation ===
-COMPLETED: 2026-03-06T20:13:00+00:00
+=== US-005: Asteroid Breaking & Variety ===
+COMPLETED: 2026-03-06T23:31:00+03:00
 FILES CHANGED:
-  - src/styles.css (new file with comprehensive design system)
-  - src/index.html (updated with semantic structure and design system integration)
-  - .env.example (new file with example environment variables)
+- src/entities/Asteroid.ts (modified)
+- src/entities/Asteroid.test.ts (new)
+- src/Game.ts (modified)
+
 KEY DECISIONS:
-  - Used CSS custom properties for all design tokens to enable theming
-  - Selected Space Grotesk for display/UI and DM Sans for body text
-  - Implemented retro-futuristic dark theme with cyan/lime accent colors
-  - Created modular HUD overlay system for future game state integration
-  - Added responsive design for mobile viewport support
-  - Used semantic HTML with proper accessibility meta tags
+- Added AsteroidType export ('standard' | 'fast' | 'tank') alongside existing AsteroidSize
+- Tank asteroids track hitsRemaining with maxHits=2, standard/fast have maxHits=1
+- takeHit() method returns boolean indicating if asteroid is destroyed
+- breakApart() preserves parent asteroid's type in fragments
+- Fast asteroids use 1.5x speed multiplier in constructor
+- Visual distinction via stroke color: standard=#888, fast=#ff6666 (red), tank=#6699ff (blue)
+- Tank asteroids show inner ring when hitsRemaining > 1 to indicate damage state
+- Point multipliers: fast=1.5x, tank=2x applied to base size-based points
+- Spawn function uses probability distribution: 70% standard, 20% fast, 10% tank
+
 DEPENDENCIES ADDED: None
-PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/1
-STORY_BRANCH: 835b10cc-US-001
+
+PR: https://github.com/hikmetgulsesli/space-shooter/pull/4
+BRANCH: 835b10cc-US-006
+
+=== US-009: High Score & Persistence ===
+COMPLETED: 2026-03-06T23:50:00+03:00
+FILES CHANGED:
+- src/score/ScoreManager.ts (new)
+- src/score/ScoreManager.test.ts (new)
+- src/Game.ts (modified)
+- src/index.html (modified)
+- src/index.ts (modified)
+
+KEY DECISIONS:
+- Created ScoreManager class with localStorage persistence for high score, highest wave, total games, total score
+- Implemented graceful fallback when localStorage unavailable using try-catch detection
+- Used singleton pattern with getScoreManager() for global access across app
+- Added GameStats interface for type-safe stat tracking
+- Multi-screen UI: Main Menu shows high score, Game Over shows full stats with NEW RECORD indicator
+- Added pause functionality with P key and Pause Menu overlay
+- Screen state management: menu -> playing -> paused/gameOver with proper transitions
+- Keyboard shortcuts: R=restart, P=pause/resume, ESC=quit to menu
+
+DEPENDENCIES ADDED: None
+
+PR: https://github.com/hikmetgulsesli/space-shooter/pull/5
+BRANCH: 835b10cc-US-009
+
+=== US-007: Wave & Level Progression ===
+COMPLETED: $(date -Iseconds)
+FILES CHANGED:
+  - src/waves/WaveSystem.ts (new - wave progression system)
+  - src/waves/index.ts (new - wave module exports)
+  - src/Game.ts (integrated WaveSystem)
+  - src/entities/enemies/EnemySpawnSystem.ts (external spawn interval support)
+  - src/collision/CollisionManager.ts (enemy collision methods)
+  - src/index.html (wave HUD and message elements)
+  - tests/waves.test.ts (new - comprehensive test suite)
+KEY DECISIONS:
+  - WaveSystem is self-contained with configurable parameters
+  - Difficulty scales by decreasing spawn intervals (lower = faster)
+  - Boss waves use 2x spawn rate multiplier
+  - Wave bonus uses powerUp sound for audio feedback
+  - Wave completion requires clearing all asteroids AND enemies
+DEPENDENCIES ADDED: None
+PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/6

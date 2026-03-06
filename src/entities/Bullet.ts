@@ -11,6 +11,12 @@ export class Bullet {
     private radius: number = 3;
     private active: boolean = false;
 
+    constructor(x?: number, y?: number, vx?: number, vy?: number) {
+        if (x !== undefined && y !== undefined && vx !== undefined && vy !== undefined) {
+            this.reset(x, y, vx, vy);
+        }
+    }
+
     /**
      * Reset the bullet for reuse from pool
      */

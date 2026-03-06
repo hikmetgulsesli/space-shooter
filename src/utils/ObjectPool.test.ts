@@ -1,4 +1,4 @@
-import { ObjectPool } from './ObjectPool';
+import { ObjectPool } from '../utils/ObjectPool';
 
 interface TestObject {
     id: number;

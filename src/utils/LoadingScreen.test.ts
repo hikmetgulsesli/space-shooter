@@ -117,7 +117,6 @@ describe('LoadingScreen', () => {
             
             await loadingScreen.simulateLoading(tasks);
             
-            // Check approximate progress values (accounting for floating point)
             expect(updateSpy).toHaveBeenCalledWith(expect.closeTo(33.33, 1), expect.any(String));
             expect(updateSpy).toHaveBeenCalledWith(expect.closeTo(66.67, 1), expect.any(String));
             expect(updateSpy).toHaveBeenCalledWith(100, 'Ready!');
