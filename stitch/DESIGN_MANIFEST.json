@@ -12,18 +12,18 @@
     {
       "id": "main-menu",
       "title": "Main Menu",
-      "description": "Space shooter game main menu with game title and navigation options",
+      "description": "Space shooter game main menu with ASTRO BLASTER title and navigation options",
       "html": "stitch/main-menu.html",
       "screenshot": "stitch/main-menu.png",
-      "stitchScreenId": "3057e182c2bf483f8a471462e809dec9"
+      "stitchScreenId": "8891b463938f40839c2727eea8c340a1"
     },
     {
       "id": "game-hud",
       "title": "Game HUD",
-      "description": "Active gameplay screen with score, lives, and control indicators",
+      "description": "Active gameplay HUD overlay with score, health, and weapon status",
       "html": "stitch/game-hud.html",
       "screenshot": "stitch/game-hud.png",
-      "stitchScreenId": "d2acb892fc68442bb7b94c9a5baeb97b"
+      "stitchScreenId": "6af8cc836acb4f87a0272ce5f90d5418"
     },
     {
       "id": "game-over",
@@ -31,10 +31,10 @@
       "description": "Game over screen with final score and retry options",
       "html": "stitch/game-over.html",
       "screenshot": "stitch/game-over.png",
-      "stitchScreenId": "670736cea8804da1b9f255b00ede6522"
+      "stitchScreenId": "b435f1869a534ad895bad15a1264c485"
     }
   ],
   "totalScreens": 3,
   "deviceType": "DESKTOP",
-  "generatedAt": "2025-03-06T20:42:00+03:00"
+  "generatedAt": "2025-03-06T20:55:00+03:00"
 }
