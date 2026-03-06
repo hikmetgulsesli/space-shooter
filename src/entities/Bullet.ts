@@ -1,19 +1,36 @@
-export class Bullet {
-    public x: number;
-    public y: number;
-    private vx: number;
-    private vy: number;
-    private radius: number = 3;
-    private active: boolean = true;
+import { ObjectPool } from '../utils/ObjectPool';
 
-    constructor(x: number, y: number, vx: number, vy: number) {
+/**
+ * Pooled Bullet class for reduced GC pressure
+ */
+export class Bullet {
+    public x: number = 0;
+    public y: number = 0;
+    private vx: number = 0;
+    private vy: number = 0;
+    private radius: number = 3;
+    private active: boolean = false;
+
+    /**
+     * Reset the bullet for reuse from pool
+     */
+    public reset(x: number, y: number, vx: number, vy: number): void {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
+        this.active = true;
+    }
+
+    /**
+     * Mark bullet as inactive (returns to pool)
+     */
+    public deactivate(): void {
+        this.active = false;
     }
 
     public update(): void {
+        if (!this.active) return;
         this.x += this.vx;
         this.y += this.vy;
     }
@@ -25,6 +42,8 @@ export class Bullet {
     }
 
     public render(ctx: CanvasRenderingContext2D): void {
+        if (!this.active) return;
+        
         ctx.fillStyle = '#ff0';
         ctx.shadowColor = '#ff0';
         ctx.shadowBlur = 5;
@@ -39,8 +58,13 @@ export class Bullet {
     public getRadius(): number {
         return this.radius;
     }
-
-    public deactivate(): void {
-        this.active = false;
-    }
 }
+
+/**
+ * Global bullet pool instance
+ */
+export const bulletPool = new ObjectPool<Bullet>(
+    () => new Bullet(),
+    (bullet) => { bullet.deactivate(); },
+    200 // Max pool size
+);

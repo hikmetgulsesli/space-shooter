@@ -1,4 +1,4 @@
-import { Bullet } from './Bullet';
+import { Bullet, bulletPool } from './Bullet';
 import { InputHandler } from '../input/InputHandler';
 import { PowerUpManager } from './PowerUp';
 
@@ -72,6 +72,7 @@ export class Player {
 
     /**
      * Shoot bullets - returns array to support multi-shot
+     * Uses object pooling for reduced GC pressure
      */
     public shoot(): Bullet[] {
         const bullets: Bullet[] = [];
@@ -88,12 +89,16 @@ export class Player {
         for (const angle of angles) {
             const vx = Math.cos(angle) * bulletSpeed;
             const vy = Math.sin(angle) * bulletSpeed;
-            bullets.push(new Bullet(
+            
+            // Acquire from pool instead of creating new
+            const bullet = bulletPool.acquire();
+            bullet.reset(
                 this.x + Math.cos(angle) * 20,
                 this.y + Math.sin(angle) * 20,
                 vx,
                 vy
-            ));
+            );
+            bullets.push(bullet);
         }
 
         return bullets;
