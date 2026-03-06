@@ -1,6 +1,9 @@
 # Project Memory
 
 ## Completed Stories
-### US-009: High Score & Persistence [done]
-- Files: Implemented Enhanced Particle & Visual Effects System (US-002): Multi-type particle system (explosion, thruster, spark), ScreenShake effect with configurable intensity/decay, Parallax Starfield background with 3 depth layers, BulletTrail system with fading, HitFlash feedback for enemy destruction, Integrated all effects into Game.ts
+### US-002: Enhanced Particle & Visual Effects System [done]
+- Files: Implemented Power-Up System with PowerUp entity, PowerUpManager, three power-up types (Rapid Fire, Shield, Multi-Shot), HUD indicators, and 15% spawn chance from destroyed asteroids
+
+### US-004: Power-Up System [done]
+- Files: Implemented particle system with explosion/thruster/spark types, screen shake effect on damage/explosions, parallax starfield with 3 depth layers, weapon trail effects for bullets, hit flash feedback system. All effects use design token colors.
 

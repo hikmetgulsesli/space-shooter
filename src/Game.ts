@@ -1,11 +1,13 @@
 import { Player } from './entities/Player';
 import { Asteroid } from './entities/Asteroid';
-import { Bullet } from './entities/Bullet';
-import { Particle } from './effects/Particle';
+import { Bullet, bulletPool } from './entities/Bullet';
+import { Particle, particlePool } from './effects/Particle';
 import { InputHandler } from './input/InputHandler';
 import { CollisionManager } from './collision/CollisionManager';
 import { PowerUp, PowerUpManager } from './entities/PowerUp';
 import { SoundManager } from './audio/SoundManager';
+import { FPSCounter } from './utils/FPSCounter';
+import { LoadingScreen } from './utils/LoadingScreen';
 import { EnemySpawnSystem } from './entities/enemies';
 import { ScoreManager } from './score/ScoreManager';
 import { WaveSystem } from './waves';
@@ -37,7 +39,8 @@ export enum GameState {
     PLAYING = 'PLAYING',
     PAUSED = 'PAUSED',
     GAMEOVER = 'GAMEOVER',
-    HIGHSCORES = 'HIGHSCORES'
+    HIGHSCORES = 'HIGHSCORES',
+    LOADING = 'LOADING'
 }
 
 export class Game {
@@ -52,14 +55,17 @@ export class Game {
     private collisionManager: CollisionManager;
     private powerUpManager: PowerUpManager;
     private soundManager: SoundManager;
-    private enemySpawnSystem: EnemySpawnSystem | null = null;
+    private fpsCounter: FPSCounter;
+    private loadingScreen: LoadingScreen | null = null;
+    private enemySpawnSystem: EnemySpawnSystem;
     private scoreManager: ScoreManager;
     private waveSystem: WaveSystem;
 
     private score: number = 0;
     private lives: number = 3;
-    private gameState: GameState = GameState.MENU;
+    private gameState: GameState = GameState.LOADING;
     private asteroidSpawnTimer: number = 0;
+    private asteroidSpawnInterval: number = 120;
     private lastFrameTime: number = 0;
 
     // UI Elements
@@ -80,6 +86,7 @@ export class Game {
     private newRecordIndicator: HTMLElement;
     private waveCompleteMessage: HTMLElement;
     private waveBonusMessage: HTMLElement;
+    private powerUpsElement: HTMLElement | null = null;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -88,10 +95,12 @@ export class Game {
         this.ctx = ctx;
 
         this.scoreManager = new ScoreManager();
-        this.inputHandler = new InputHandler();
-        this.collisionManager = new CollisionManager();
-        this.soundManager = new SoundManager();
+        this.inputHandler = new InputHandler(canvas);
+        this.collisionManager = new CollisionManager(true); // Enable spatial grid
         this.powerUpManager = new PowerUpManager();
+        this.soundManager = new SoundManager();
+        this.fpsCounter = new FPSCounter();
+        this.enemySpawnSystem = new EnemySpawnSystem(canvas);
         this.waveSystem = new WaveSystem();
 
         // Get UI elements with null checks
@@ -112,8 +121,10 @@ export class Game {
         this.newRecordIndicator = this.getElementOrThrow('newRecordIndicator');
         this.waveCompleteMessage = this.getElementOrThrow('waveCompleteMessage');
         this.waveBonusMessage = this.getElementOrThrow('waveBonusMessage');
+        this.powerUpsElement = document.getElementById('powerUps');
 
         this.setupEventListeners();
+        this.setupMuteButton();
         this.setupButtonListeners();
         this.updateHighScoreDisplay();
     }
@@ -127,6 +138,16 @@ export class Game {
             throw new Error(`UI element #${id} not found`);
         }
         return element;
+    }
+
+    private setupMuteButton(): void {
+        const muteBtn = document.getElementById('muteBtn');
+        if (muteBtn) {
+            muteBtn.addEventListener('click', () => {
+                this.soundManager.toggleMute();
+                muteBtn.textContent = this.soundManager.isMuted() ? '🔇' : '🔊';
+            });
+        }
     }
 
     private setupEventListeners(): void {
@@ -232,15 +253,48 @@ export class Game {
         }
     }
 
-    public start(): void {
+    public async start(): Promise<void> {
+        // Show loading screen
+        this.loadingScreen = new LoadingScreen();
+
+        // Simulate initialization tasks
+        await this.loadingScreen.simulateLoading([
+            () => this.initializePool(),
+            () => this.initializeCollisionSystem(),
+            () => this.initializeInputSystem(),
+        ]);
+
+        this.gameState = GameState.MENU;
         this.showScreen(GameState.MENU);
         this.updateHighScoreDisplay();
+    }
+
+    private async initializePool(): Promise<void> {
+        // Pre-warm object pools
+        for (let i = 0; i < 50; i++) {
+            bulletPool.release(bulletPool.acquire());
+        }
+        for (let i = 0; i < 100; i++) {
+            particlePool.release(particlePool.acquire());
+        }
+        return Promise.resolve();
+    }
+
+    private async initializeCollisionSystem(): Promise<void> {
+        // Collision system is ready
+        return Promise.resolve();
+    }
+
+    private async initializeInputSystem(): Promise<void> {
+        // Input system is ready
+        return Promise.resolve();
     }
 
     private startGame(): void {
         this.resetGame();
         this.gameState = GameState.PLAYING;
         this.showScreen(GameState.PLAYING);
+        this.inputHandler.showTouchControls(true);
         this.soundManager.startBackgroundMusic();
         this.lastFrameTime = performance.now();
         this.gameLoop();
@@ -256,15 +310,13 @@ export class Game {
         const tbody = document.getElementById('highScoresTableBody');
         if (!tbody) return;
 
-        // Use default high scores constant
-
         const highScore = this.scoreManager.getHighScore();
         const playerInTop10 = highScore > 0 && highScore >= DEFAULT_HIGH_SCORES[9].score;
 
         tbody.innerHTML = DEFAULT_HIGH_SCORES.map((entry, index) => {
             const isTop3 = index < 3;
             const isPlayer = playerInTop10 && highScore === entry.score;
-            
+
             return `
                 <tr class="hs-row ${isPlayer ? 'hs-current' : ''}">
                     <td class="hs-rank">
@@ -281,16 +333,24 @@ export class Game {
     private resetGame(): void {
         this.score = 0;
         this.lives = 3;
-        this.asteroids = [];
-        this.bullets = [];
-        this.particles = [];
-        this.powerUps = [];
-        this.asteroidSpawnTimer = 0;
-        this.powerUpManager.clear();
         this.waveSystem.reset();
 
+        // Return bullets to pool
+        this.bullets.forEach(b => bulletPool.release(b));
+        this.bullets = [];
+
+        // Return particles to pool
+        this.particles.forEach(p => particlePool.release(p));
+        this.particles = [];
+
+        this.asteroids = [];
+        this.powerUps = [];
+        this.asteroidSpawnTimer = 0;
+        this.asteroidSpawnInterval = 120;
+        this.powerUpManager.clear();
+        this.enemySpawnSystem.reset();
+
         this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
-        this.enemySpawnSystem = new EnemySpawnSystem(this.canvas);
 
         this.updateUI();
         this.hideWaveCompleteMessage();
@@ -304,6 +364,7 @@ export class Game {
         if (this.gameState !== GameState.PLAYING) return;
         this.gameState = GameState.PAUSED;
         this.showScreen(GameState.PAUSED);
+        this.inputHandler.showTouchControls(false);
         this.soundManager.stopBackgroundMusic();
     }
 
@@ -311,6 +372,7 @@ export class Game {
         if (this.gameState !== GameState.PAUSED) return;
         this.gameState = GameState.PLAYING;
         this.showScreen(GameState.PLAYING);
+        this.inputHandler.showTouchControls(true);
         this.soundManager.startBackgroundMusic();
         this.lastFrameTime = performance.now();
         this.gameLoop();
@@ -319,6 +381,7 @@ export class Game {
     private returnToMenu(): void {
         this.gameState = GameState.MENU;
         this.showScreen(GameState.MENU);
+        this.inputHandler.showTouchControls(false);
         this.soundManager.stopBackgroundMusic();
         this.updateHighScoreDisplay();
     }
@@ -332,11 +395,13 @@ export class Game {
 
         this.update(deltaTime);
         this.render();
+        this.fpsCounter.update();
+
         requestAnimationFrame(() => this.gameLoop());
     }
 
     private update(deltaTime: number): void {
-        if (!this.player || !this.enemySpawnSystem) return;
+        if (!this.player) return;
 
         this.player.update(this.inputHandler, this.canvas);
         this.powerUpManager.update(deltaTime);
@@ -367,22 +432,37 @@ export class Game {
     }
 
     private updateBullets(): void {
-        this.bullets = this.bullets.filter(bullet => {
+        // Update bullets and return inactive ones to pool
+        const activeBullets: Bullet[] = [];
+        for (const bullet of this.bullets) {
             bullet.update();
-            return bullet.isActive(this.canvas);
-        });
+            if (bullet.isActive(this.canvas)) {
+                activeBullets.push(bullet);
+            } else {
+                bulletPool.release(bullet);
+            }
+        }
+        this.bullets = activeBullets;
     }
 
     private updateParticles(): void {
-        this.particles = this.particles.filter(particle => {
+        // Update particles and return inactive ones to pool
+        const activeParticles: Particle[] = [];
+        for (const particle of this.particles) {
             particle.update();
-            return particle.isActive();
-        });
+            if (particle.isActive()) {
+                activeParticles.push(particle);
+            } else {
+                particlePool.release(particle);
+            }
+        }
+        this.particles = activeParticles;
     }
 
     private updateEnemies(): void {
-        if (!this.enemySpawnSystem) return;
-        this.enemySpawnSystem.update(this.player?.x ?? 0, this.player?.y ?? 0);
+        if (this.player) {
+            this.enemySpawnSystem.update(this.player.x, this.player.y);
+        }
     }
 
     private updatePowerUps(): void {
@@ -393,12 +473,10 @@ export class Game {
     }
 
     private updateWaveSystem(): void {
-        if (!this.enemySpawnSystem) return;
-        
         const activeAsteroids = this.asteroids.length;
         const activeEnemies = this.enemySpawnSystem.getActiveEnemyCount();
         const waveBonus = this.waveSystem.update(activeAsteroids, activeEnemies);
-        
+
         if (waveBonus > 0) {
             this.score += waveBonus;
             this.showWaveCompleteMessage(waveBonus);
@@ -433,6 +511,9 @@ export class Game {
 
     private checkCollisions(): void {
         if (!this.player) return;
+
+        // Build spatial grid for this frame
+        this.collisionManager.buildSpatialGrid(this.player, this.asteroids, this.bullets);
 
         // Check player-powerup collisions
         for (let i = this.powerUps.length - 1; i >= 0; i--) {
@@ -471,38 +552,52 @@ export class Game {
                 const bullet = this.bullets[j];
 
                 if (this.collisionManager.checkBulletAsteroidCollision(bullet, asteroid)) {
-                    this.score += asteroid.getPoints();
-                    this.createExplosion(asteroid.x, asteroid.y, '#888');
-                    this.playExplosionSound(asteroid);
-
-                    // Spawn power-up with 15% chance
-                    if (PowerUp.shouldSpawn()) {
-                        this.powerUps.push(new PowerUp(asteroid.x, asteroid.y, PowerUp.getRandomType()));
-                    }
-
-                    this.asteroids.splice(i, 1);
+                    // Return bullet to pool
+                    bulletPool.release(this.bullets[j]);
                     this.bullets.splice(j, 1);
+
+                    const isDestroyed = asteroid.takeHit();
+
+                    if (isDestroyed) {
+                        this.score += asteroid.getPoints();
+                        this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
+                        this.playExplosionSound(asteroid);
+
+                        // Break apart if not small
+                        const fragments = asteroid.breakApart();
+                        this.asteroids.push(...fragments);
+
+                        // Spawn power-up with 15% chance
+                        if (PowerUp.shouldSpawn()) {
+                            this.powerUps.push(new PowerUp(asteroid.x, asteroid.y, PowerUp.getRandomType()));
+                        }
+
+                        this.asteroids.splice(i, 1);
+                    } else {
+                        // Tank asteroid hit but not destroyed - visual feedback
+                        this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
+                    }
                     break;
                 }
             }
         }
 
         // Check player-enemy and bullet-enemy collisions
-        const enemies = this.enemySpawnSystem?.getEnemies() ?? [];
+        const enemies = this.enemySpawnSystem.getEnemies();
         for (let i = enemies.length - 1; i >= 0; i--) {
             const enemy = enemies[i];
 
             if (this.collisionManager.checkPlayerEnemyCollision(this.player, enemy)) {
                 if (this.powerUpManager.useShield()) {
                     this.createExplosion(enemy.x, enemy.y, '#0ff');
-                    this.enemySpawnSystem?.removeEnemy(enemy);
+                    this.enemySpawnSystem.removeEnemy(enemy);
                     continue;
                 }
 
                 this.lives--;
                 this.createExplosion(this.player.x, this.player.y, '#0ff');
                 this.soundManager.play('playerDamage');
-                this.enemySpawnSystem?.removeEnemy(enemy);
+                this.enemySpawnSystem.removeEnemy(enemy);
 
                 if (this.lives <= 0) {
                     this.endGame();
@@ -515,13 +610,15 @@ export class Game {
 
                 if (this.collisionManager.checkBulletEnemyCollision(bullet, enemy)) {
                     enemy.takeDamage(10);
+                    // Return bullet to pool
+                    bulletPool.release(bullet);
                     this.bullets.splice(j, 1);
 
                     if (!enemy.isActive()) {
                         this.score += enemy.getPoints();
                         this.createExplosion(enemy.x, enemy.y, '#ff6b6b');
                         this.soundManager.play('explosionMedium');
-                        this.enemySpawnSystem?.removeEnemy(enemy);
+                        this.enemySpawnSystem.removeEnemy(enemy);
                     }
                     break;
                 }
@@ -529,20 +626,20 @@ export class Game {
         }
 
         // Check player-enemy bullet collisions
-        const enemyBullets = this.enemySpawnSystem?.getBullets() ?? [];
+        const enemyBullets = this.enemySpawnSystem.getBullets();
         for (let i = enemyBullets.length - 1; i >= 0; i--) {
             const enemyBullet = enemyBullets[i];
 
             if (this.collisionManager.checkPlayerEnemyBulletCollision(this.player, enemyBullet)) {
                 if (this.powerUpManager.useShield()) {
                     enemyBullet.deactivate();
-                    this.enemySpawnSystem?.removeBullet(enemyBullet);
+                    this.enemySpawnSystem.removeBullet(enemyBullet);
                     continue;
                 }
 
                 this.lives--;
                 enemyBullet.deactivate();
-                this.enemySpawnSystem?.removeBullet(enemyBullet);
+                this.enemySpawnSystem.removeBullet(enemyBullet);
                 this.createExplosion(this.player.x, this.player.y, '#0ff');
                 this.soundManager.play('playerDamage');
 
@@ -559,10 +656,12 @@ export class Game {
         powerUp.collect();
         this.soundManager.play('powerUp');
 
-        // Create collection effect using PowerUp.COLORS
+        // Create collection effect
         const color = PowerUp.COLORS[type];
         for (let i = 0; i < 10; i++) {
-            this.particles.push(new Particle(this.player?.x ?? 0, this.player?.y ?? 0, color));
+            const particle = particlePool.acquire();
+            particle.reset(this.player?.x ?? 0, this.player?.y ?? 0, color);
+            this.particles.push(particle);
         }
     }
 
@@ -589,7 +688,9 @@ export class Game {
 
     private createExplosion(x: number, y: number, color: string): void {
         for (let i = 0; i < 20; i++) {
-            this.particles.push(new Particle(x, y, color));
+            const particle = particlePool.acquire();
+            particle.reset(x, y, color);
+            this.particles.push(particle);
         }
     }
 
@@ -623,6 +724,46 @@ export class Game {
         this.scoreElement.textContent = this.score.toString();
         this.livesElement.textContent = this.lives.toString();
         this.waveElement.textContent = this.waveSystem.getCurrentWave().toString();
+        this.renderPowerUpIndicators();
+    }
+
+    private renderPowerUpIndicators(): void {
+        if (!this.powerUpsElement) return;
+
+        const activePowerUps = this.powerUpManager.getActivePowerUps();
+
+        // Clear existing indicators safely
+        this.powerUpsElement.innerHTML = '';
+
+        // Add indicators for each active power-up
+        for (const powerUp of activePowerUps) {
+            const indicator = document.createElement('div');
+            indicator.className = 'power-up-indicator';
+
+            const name = this.getPowerUpDisplayName(powerUp.type);
+            const seconds = Math.ceil(powerUp.remainingTime / 1000);
+
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = `${name} `;
+
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'power-up-timer';
+            timerSpan.textContent = `${seconds}s`;
+
+            indicator.appendChild(nameSpan);
+            indicator.appendChild(timerSpan);
+
+            this.powerUpsElement.appendChild(indicator);
+        }
+    }
+
+    private getPowerUpDisplayName(type: string): string {
+        const names: Record<string, string> = {
+            'rapidFire': 'Rapid Fire',
+            'shield': 'Shield',
+            'multiShot': 'Multi Shot'
+        };
+        return names[type] || type;
     }
 
     private render(): void {
@@ -636,7 +777,7 @@ export class Game {
         this.bullets.forEach(bullet => bullet.render(this.ctx));
         this.particles.forEach(particle => particle.render(this.ctx));
         this.powerUps.forEach(powerUp => powerUp.render(this.ctx));
-        this.enemySpawnSystem?.render(this.ctx);
+        this.enemySpawnSystem.render(this.ctx);
     }
 
     private drawStars(): void {
@@ -659,4 +800,9 @@ export class Game {
     getGameState(): GameState { return this.gameState; }
     getScoreManager(): ScoreManager { return this.scoreManager; }
     getWaveSystem(): WaveSystem { return this.waveSystem; }
+    isTouchEnabled(): boolean { return this.inputHandler.isTouchEnabled(); }
+    getFPSCounter(): FPSCounter { return this.fpsCounter; }
+    getCollisionManager(): CollisionManager { return this.collisionManager; }
+    getBulletCount(): number { return this.bullets.length; }
+    getParticleCount(): number { return this.particles.length; }
 }
