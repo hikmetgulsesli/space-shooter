@@ -1,62 +1,40 @@
 {
-  "projectName": "space-shooter",
+  "project": "space-shooter",
   "stitchProjectId": "4246088007275650258",
   "deviceType": "DESKTOP",
-  "screens": [
-    {
-      "id": "game-screen",
-      "title": "Game Screen",
-      "description": "Main gameplay screen with canvas, HUD, score, and health display",
-      "htmlFile": "stitch/game-screen.html",
-      "screenshotFile": "stitch/game-screen.png",
-      "stitchScreenId": "dfe7273dd5ee41dcb5b6a5e4b147e642"
-    },
-    {
-      "id": "game-over-screen",
-      "title": "Game Over Screen",
-      "description": "Game over screen with final score and high score table",
-      "htmlFile": "stitch/game-over-screen.html",
-      "screenshotFile": "stitch/game-over-screen.png",
-      "stitchScreenId": "dc79b15680134d05b162d2865faf6ed3"
-    },
-    {
-      "id": "start-menu-screen",
-      "title": "Start Menu Screen",
-      "description": "Main menu with game title, buttons, and controls info",
-      "htmlFile": "stitch/start-menu-screen.html",
-      "screenshotFile": "stitch/start-menu-screen.png",
-      "stitchScreenId": "0a7d4b2fdf2f406aa731a88291e764e4"
-    },
-    {
-      "id": "main-menu",
-      "title": "Astro Blaster Main Menu Dashboard",
-      "description": "Space shooter game main menu with industrial dashboard aesthetic, ASTRO BLASTER title with glow effect, start button, and sci-fi industrial feel",
-      "htmlFile": "stitch/main-menu.html",
-      "screenshotFile": "stitch/main-menu.png",
-      "stitchScreenId": "03859f67055149e1bc5bb8b0d804ea36"
-    },
-    {
-      "id": "game-hud",
-      "title": "Astro Blaster Gameplay HUD Overlay",
-      "description": "Space shooter game HUD overlay with score display, lives indicator, health bar, weapon status, and crosshair",
-      "htmlFile": "stitch/game-hud.html",
-      "screenshotFile": "stitch/game-hud.png",
-      "stitchScreenId": "1ffa1d9022714f7899d1f064ba54fd38"
-    },
-    {
-      "id": "game-over",
-      "title": "Astro Blaster Game Over Screen",
-      "description": "Game over screen with glitch effect GAME OVER text, final score, high score indicator, try again and main menu buttons",
-      "htmlFile": "stitch/game-over.html",
-      "screenshotFile": "stitch/game-over.png",
-      "stitchScreenId": "91135d8ba0e3456d8603fdd0acd35d5d"
-    }
-  ],
   "designSystem": {
     "aesthetic": "industrial",
     "palette": "DevTool / CLI Dashboard (dark mode)",
     "headingFont": "Space Grotesk",
     "bodyFont": "DM Sans",
     "iconLibrary": "Lucide React"
-  }
+  },
+  "screens": [
+    {
+      "id": "main-menu",
+      "title": "Asteroid Blaster Main Menu Screen",
+      "screenId": "b68cd345467e437ca8da68a9b468079c",
+      "html": "stitch/main-menu.html",
+      "screenshot": "stitch/main-menu.png",
+      "description": "Main menu with START GAME, HIGH SCORES, and SETTINGS options"
+    },
+    {
+      "id": "game-hud",
+      "title": "Asteroid Blaster Gameplay HUD Overlay",
+      "screenId": "5a36405bb25e4c86a5e008ddc21b2129",
+      "html": "stitch/game-hud.html",
+      "screenshot": "stitch/game-hud.png",
+      "description": "In-game HUD with score, lives, and weapon status overlay"
+    },
+    {
+      "id": "game-over",
+      "title": "Asteroid Blaster Game Over Screen",
+      "screenId": "f5823c351cbf47e5bd17c6c8e01063fc",
+      "html": "stitch/game-over.html",
+      "screenshot": "stitch/game-over.png",
+      "description": "Game over screen with final score and replay options"
+    }
+  ],
+  "tokens": "stitch/design-tokens.css",
+  "generatedAt": "2026-03-06T21:18:00+03:00"
 }

@@ -3,92 +3,107 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Astro Blaster Main Menu Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<title>Asteroid Blaster Main Menu Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
-  tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary": "#00d4ff",
-          "background-light": "#f5f8f8",
-          "background-dark": "#1a1a1a",
-          "panel-bg": "#232323",
-          "border-color": "#333333"
-        },
-        fontFamily: {
-          "display": ["Space Grotesk"]
-        },
-        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-      },
-    },
-  }
-</script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#57b0ff",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#0d1117",
+                        "surface": "#161b22",
+                        "border": "#30363d",
+                        "text-muted": "#8b949e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, #30363d 1px, transparent 1px), linear-gradient(to bottom, #30363d 1px, transparent 1px)",
+                    }
+                },
+            },
+        }
+    </script>
 <style>
-  .grid-bg {
-    background-image: 
-      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-  .neon-glow {
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
-  }
-  .btn-industrial {
-    position: relative;
-    border: 2px solid theme('colors.border-color');
-    background: theme('colors.panel-bg');
-    transition: all 0.3s ease;
-  }
-  .btn-industrial::before {
-    content: '';
-    position: absolute;
-    top: -4px; right: -4px; bottom: -4px; left: -4px;
-    border: 1px solid theme('colors.primary');
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .btn-industrial:hover {
-    border-color: theme('colors.primary');
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2) inset;
-  }
-  .btn-industrial:hover::before {
-    opacity: 0.5;
-  }
-</style>
+        .grid-bg {
+            background-size: 40px 40px;
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(87, 176, 255, 0.5);
+        }
+        .cli-border {
+            position: relative;
+        }
+        .cli-border::before, .cli-border::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: theme('colors.primary');
+            border-style: solid;
+        }
+        .cli-border::before {
+            top: 0;
+            left: 0;
+            border-width: 1px 0 0 1px;
+        }
+        .cli-border::after {
+            bottom: 0;
+            right: 0;
+            border-width: 0 1px 1px 0;
+        }
+    </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden">
-<div class="absolute inset-0 grid-bg pointer-events-none"></div>
-<div class="absolute top-1/4 left-1/4 w-32 h-32 border border-primary/20 rotate-45 pointer-events-none rounded"></div>
-<div class="absolute bottom-1/3 right-1/4 w-48 h-48 border border-primary/10 rounded-full pointer-events-none"></div>
-<div class="relative z-10 flex flex-col min-h-screen p-8">
-<header class="flex justify-center items-center py-12">
-<h1 class="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 neon-glow tracking-widest text-center">
-        ASTRO BLASTER
-      </h1>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden flex flex-col items-center justify-center">
+<div class="absolute inset-0 bg-grid-pattern grid-bg opacity-10 pointer-events-none"></div>
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<header class="w-full max-w-[960px] mx-auto absolute top-0 left-0 right-0 flex items-center justify-between px-8 py-4 border-b border-border/50">
+<div class="flex items-center gap-4">
+<div class="text-primary material-symbols-outlined">rocket_launch</div>
+<div class="font-mono text-xs text-text-muted tracking-widest">SYS_INIT_OK</div>
+</div>
+<div class="flex items-center gap-4 font-mono text-xs text-text-muted">
+<span>v1.0.4</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
 </header>
-<main class="flex-1 flex justify-center items-center">
-<button class="btn-industrial px-12 py-6 text-2xl font-bold text-primary tracking-widest uppercase rounded">
-        START MISSION
-      </button>
+<main class="flex flex-col items-center justify-center w-full max-w-[600px] z-10 px-6">
+<div class="mb-16 text-center relative w-full">
+<div class="absolute -top-4 -left-4 w-4 h-4 border-t-2 border-l-2 border-primary/50"></div>
+<div class="absolute -bottom-4 -right-4 w-4 h-4 border-b-2 border-r-2 border-primary/50"></div>
+<h1 class="text-4xl md:text-6xl font-bold tracking-[0.2em] text-primary glow-text uppercase">
+                Asteroid<br/>Blaster
+            </h1>
+</div>
+<div class="flex flex-col gap-4 w-full max-w-[400px]">
+<button class="group relative flex items-center justify-between px-6 py-4 bg-surface border border-border hover:border-primary/50 transition-colors duration-300 cli-border">
+<span class="text-lg font-bold tracking-[0.1em] group-hover:text-primary transition-colors">START GAME</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<button class="group relative flex items-center justify-between px-6 py-4 bg-surface border border-border hover:border-primary/50 transition-colors duration-300 cli-border">
+<span class="text-lg font-bold tracking-[0.1em] group-hover:text-primary transition-colors">HIGH SCORES</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+<button class="group relative flex items-center justify-between px-6 py-4 bg-surface border border-border hover:border-primary/50 transition-colors duration-300 cli-border">
+<span class="text-lg font-bold tracking-[0.1em] group-hover:text-primary transition-colors">SETTINGS</span>
+<span class="material-symbols-outlined text-text-muted group-hover:text-primary group-hover:translate-x-1 transition-all">chevron_right</span>
+</button>
+</div>
 </main>
-<footer class="flex justify-between items-end mt-auto pointer-events-none">
-<button class="pointer-events-auto p-4 border border-border-color bg-panel-bg hover:border-primary hover:text-primary transition-colors rounded group flex items-center justify-center">
-<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all">settings</span>
-</button>
-<div class="flex flex-col gap-2 items-center pointer-events-auto">
-<div class="h-2 w-32 bg-border-color rounded overflow-hidden">
-<div class="h-full w-2/3 bg-primary"></div>
+<footer class="w-full absolute bottom-0 left-0 right-0 flex items-center justify-between px-8 py-4 font-mono text-xs text-text-muted">
+<div>OS: STITCH-OS</div>
+<div class="flex items-center gap-2">
+            STATUS: OPTIMAL <span class="text-primary">[OK]</span>
 </div>
-<p class="text-xs text-slate-400 uppercase tracking-widest">System Ready</p>
-</div>
-<button class="pointer-events-auto p-4 border border-border-color bg-panel-bg hover:border-primary hover:text-primary transition-colors rounded group flex items-center justify-center">
-<span class="material-symbols-outlined text-3xl group-hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-all">volume_up</span>
-</button>
 </footer>
-</div>
 </body></html>

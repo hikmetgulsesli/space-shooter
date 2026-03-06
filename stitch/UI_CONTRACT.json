@@ -163,5 +163,190 @@
     "totalInteractive": 4,
     "requiresRouter": false,
     "requiresDragDrop": false
+  },
+  {
+    "screenId": "main-menu",
+    "screenTitle": "Astro Blaster Main Menu Dashboard",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "START MISSION",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "volume_up",
+        "line": 89
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 81
+      },
+      {
+        "type": "button",
+        "label": "[icon: volume_up]",
+        "line": 90
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "START MISSION",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 80
+      },
+      {
+        "type": "button",
+        "label": "volume_up",
+        "line": 89
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 81
+      },
+      {
+        "type": "button",
+        "label": "[icon: volume_up]",
+        "line": 90
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 5,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-hud",
+    "screenTitle": "Astro Blaster Gameplay HUD Overlay",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "FIRE",
+        "line": 120
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 44
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 61
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: my_location]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: shield]",
+        "line": 82
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "FIRE",
+        "line": 120
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 44
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 61
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: favorite]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: my_location]",
+        "line": 74
+      },
+      {
+        "type": "button",
+        "label": "[icon: shield]",
+        "line": 82
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 7,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-over",
+    "screenTitle": "Astro Blaster Game Over Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "refresh\nReboot Mission",
+        "line": 146
+      },
+      {
+        "type": "button",
+        "label": "home\nSystem Main Menu",
+        "line": 151
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "refresh\nReboot Mission",
+        "line": 146
+      },
+      {
+        "type": "button",
+        "label": "home\nSystem Main Menu",
+        "line": 151
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 2,
+    "requiresRouter": false,
+    "requiresDragDrop": false
   }
 ]
