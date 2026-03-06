@@ -1,6 +1,6 @@
 {
-  "project": "space-shooter",
-  "stitchProjectId": "4246088007275650258",
+  "projectId": "4246088007275650258",
+  "projectName": "space-shooter",
   "deviceType": "DESKTOP",
   "designSystem": {
     "aesthetic": "industrial",
@@ -11,30 +11,41 @@
   },
   "screens": [
     {
+      "id": "main-menu",
+      "title": "Asteroid Defender Main Menu",
+      "html": "main-menu.html",
+      "screenshot": "main-menu.png",
+      "type": "menu"
+    },
+    {
       "id": "start-menu",
-      "title": "Astro Blaster Main Menu Screen",
-      "screenId": "72d07952ff8e4e66a645dcb9c808e464",
-      "html": "stitch/start-menu.html",
-      "screenshot": "stitch/start-menu.png",
-      "description": "Main menu with START GAME, HIGH SCORES, SETTINGS, QUIT options"
+      "title": "Asteroid Defender Start Menu",
+      "html": "start-menu.html",
+      "screenshot": "start-menu.png",
+      "type": "menu"
+    },
+    {
+      "id": "start-menu-screen",
+      "title": "Astro Blaster Start Menu Screen",
+      "html": "start-menu-screen.html",
+      "screenshot": "start-menu-screen.png",
+      "type": "menu"
     },
     {
       "id": "game-screen",
-      "title": "Astro Blaster Gameplay Screen HUD",
-      "screenId": "14e89db7cf4e4a388104b5c52d9814d8",
-      "html": "stitch/game-screen.html",
-      "screenshot": "stitch/game-screen.png",
-      "description": "In-game screen with HTML5 Canvas and HUD overlay showing score, health, weapon status"
+      "title": "Astro Blaster Gameplay Screen",
+      "html": "game-screen.html",
+      "screenshot": "game-screen.png",
+      "type": "game"
     },
     {
-      "id": "game-over",
+      "id": "game-over-screen",
       "title": "Astro Blaster Game Over Screen",
-      "screenId": "639edb4361dd43a8a9a8ad547dacfd29",
-      "html": "stitch/game-over.html",
-      "screenshot": "stitch/game-over.png",
-      "description": "Game over screen with final score, high score comparison, TRY AGAIN and MAIN MENU buttons"
+      "html": "game-over-screen.html",
+      "screenshot": "game-over-screen.png",
+      "type": "game-over"
     }
   ],
-  "tokens": "stitch/design-tokens.css",
-  "generatedAt": "2026-03-06T21:29:00+03:00"
+  "totalScreens": 5,
+  "generatedAt": "2025-03-06T21:30:00Z"
 }
