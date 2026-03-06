@@ -1,48 +1,38 @@
 {
-  "project": "space-shooter",
+  "projectName": "space-shooter",
   "stitchProjectId": "4246088007275650258",
+  "deviceType": "DESKTOP",
+  "screens": [
+    {
+      "id": "game-screen",
+      "title": "Game Screen",
+      "description": "Main gameplay screen with canvas, HUD, score, and health display",
+      "htmlFile": "stitch/game-screen.html",
+      "screenshotFile": "stitch/game-screen.png",
+      "stitchScreenId": "dfe7273dd5ee41dcb5b6a5e4b147e642"
+    },
+    {
+      "id": "game-over-screen",
+      "title": "Game Over Screen",
+      "description": "Game over screen with final score and high score table",
+      "htmlFile": "stitch/game-over-screen.html",
+      "screenshotFile": "stitch/game-over-screen.png",
+      "stitchScreenId": "dc79b15680134d05b162d2865faf6ed3"
+    },
+    {
+      "id": "start-menu-screen",
+      "title": "Start Menu Screen",
+      "description": "Main menu with game title, buttons, and controls info",
+      "htmlFile": "stitch/start-menu-screen.html",
+      "screenshotFile": "stitch/start-menu-screen.png",
+      "stitchScreenId": "0a7d4b2fdf2f406aa731a88291e764e4"
+    }
+  ],
   "designSystem": {
     "aesthetic": "industrial",
     "palette": "DevTool / CLI Dashboard (dark mode)",
     "headingFont": "Space Grotesk",
     "bodyFont": "DM Sans",
     "iconLibrary": "Lucide React"
-  },
-  "screens": [
-    {
-      "id": "main-menu",
-      "title": "Main Menu",
-      "description": "Space shooter game main menu with ASTRO BLASTER title and navigation options",
-      "html": "stitch/main-menu.html",
-      "screenshot": "stitch/main-menu.png",
-      "stitchScreenId": "422af7705f294b0d9e0372b58e10e215"
-    },
-    {
-      "id": "game-hud",
-      "title": "Game HUD",
-      "description": "Active gameplay HUD overlay with score, health, and weapon status",
-      "html": "stitch/game-hud.html",
-      "screenshot": "stitch/game-hud.png",
-      "stitchScreenId": "ab9fc8a7d6e741cb86d0331cd8b727b5"
-    },
-    {
-      "id": "game-over",
-      "title": "Game Over",
-      "description": "Game over screen with final score and retry options",
-      "html": "stitch/game-over.html",
-      "screenshot": "stitch/game-over.png",
-      "stitchScreenId": "92d4784735534b719764d5f57f933d0b"
-    },
-    {
-      "id": "pause-menu",
-      "title": "Pause Menu",
-      "description": "Pause menu overlay with resume, restart, and quit options",
-      "html": "stitch/pause-menu.html",
-      "screenshot": "stitch/pause-menu.png",
-      "stitchScreenId": "7988e2a7eabe478586dd92d42324d51b"
-    }
-  ],
-  "totalScreens": 4,
-  "deviceType": "DESKTOP",
-  "generatedAt": "2025-03-06T21:05:00+03:00"
+  }
 }

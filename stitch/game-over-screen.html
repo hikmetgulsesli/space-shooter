@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html class="dark"><head>
+<meta charset="utf-8"/>
+<title>Astro Blaster Game Over Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=DM+Sans:opsz,wght@9..40,400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#ff6933",
+          "secondary": "#00d4ff",
+          "background-light": "#f8f6f5",
+          "background-dark": "#1a1a1a",
+          "surface-dark": "#242424",
+          "border-dark": "#333333"
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "mono": ["DM Sans", "monospace"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .scanline {
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0),
+      rgba(255,255,255,0) 50%,
+      rgba(0,0,0,0.1) 50%,
+      rgba(0,0,0,0.1)
+    );
+    background-size: 100% 4px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+  .glitch-text {
+    text-shadow: 2px 0 0 rgba(0, 212, 255, 0.5), -2px 0 0 rgba(255, 105, 51, 0.5);
+  }
+</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen relative overflow-hidden">
+<div class="scanline"></div>
+<div class="absolute top-4 left-4 text-xs font-mono text-primary/70">
+  &gt; SYS.INIT OK<br/>
+  &gt; RENDER.ENG ACTIVE<br/>
+  &gt; SECTOR: A-74
+</div>
+<div class="absolute top-4 right-4 text-xs font-mono text-secondary/70 text-right">
+  V 2.4.1 [STABLE]<br/>
+  MEM: 1024MB ALLOC<br/>
+  UID: 98X-77A
+</div>
+<div class="absolute inset-0 z-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background-dark to-background-dark"></div>
+<div class="relative z-10 flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1 justify-center relative">
+<header class="absolute top-0 left-0 right-0 flex items-center justify-between whitespace-nowrap border-b border-border-dark px-10 py-3 bg-surface-dark/50 backdrop-blur-sm rounded-t-lg">
+<div class="flex items-center gap-4 text-slate-100">
+<span class="material-symbols-outlined text-secondary text-2xl">rocket_launch</span>
+<h2 class="text-slate-100 text-lg font-bold leading-tight tracking-widest uppercase">Astro Blaster</h2>
+</div>
+<div class="text-xs font-mono text-slate-400">NET: CONNECTED</div>
+</header>
+<div class="flex flex-col items-center justify-center pt-24 pb-8 space-y-6">
+<h1 class="text-secondary glitch-text tracking-widest text-[56px] font-bold leading-tight px-4 text-center">GAME OVER</h1>
+<div class="bg-surface-dark border border-border-dark px-8 py-4 rounded-lg shadow-[0_0_15px_rgba(255,105,51,0.1)]">
+<h2 class="text-slate-100 text-[28px] font-mono font-bold leading-tight tracking-widest text-center">FINAL SCORE: <span class="text-primary">012500</span></h2>
+</div>
+</div>
+<div class="px-4 py-6 w-full max-w-2xl mx-auto @container">
+<div class="flex flex-col gap-2 mb-4">
+<div class="text-xs font-mono text-secondary/70 uppercase tracking-widest flex items-center gap-2">
+<span class="w-2 h-2 bg-secondary rounded-full"></span> TOP 5 PILOTS DATABASE
+             </div>
+<div class="h-px w-full bg-border-dark"></div>
+</div>
+<div class="flex overflow-hidden rounded-lg border border-border-dark bg-surface-dark/80 backdrop-blur-md shadow-lg">
+<table class="flex-1 w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-dark border-b border-border-dark">
+<th class="px-6 py-4 text-slate-300 text-xs font-mono font-bold uppercase tracking-widest w-24">RANK</th>
+<th class="px-6 py-4 text-slate-300 text-xs font-mono font-bold uppercase tracking-widest">PILOT ID</th>
+<th class="px-6 py-4 text-slate-300 text-xs font-mono font-bold uppercase tracking-widest text-right">SCORE</th>
+</tr>
+</thead>
+<tbody class="font-mono text-sm">
+<tr class="border-b border-border-dark hover:bg-white/5 transition-colors">
+<td class="px-6 py-3 text-secondary font-bold">01</td>
+<td class="px-6 py-3 text-slate-300">CYB3R</td>
+<td class="px-6 py-3 text-slate-300 text-right">015000</td>
+</tr>
+<tr class="border-b border-border-dark bg-primary/10">
+<td class="px-6 py-3 text-primary font-bold">02</td>
+<td class="px-6 py-3 text-primary font-bold">YOU</td>
+<td class="px-6 py-3 text-primary font-bold text-right">012500</td>
+</tr>
+<tr class="border-b border-border-dark hover:bg-white/5 transition-colors">
+<td class="px-6 py-3 text-slate-400">03</td>
+<td class="px-6 py-3 text-slate-400">G4M3R</td>
+<td class="px-6 py-3 text-slate-400 text-right">011200</td>
+</tr>
+<tr class="border-b border-border-dark hover:bg-white/5 transition-colors">
+<td class="px-6 py-3 text-slate-500">04</td>
+<td class="px-6 py-3 text-slate-500">STRT</td>
+<td class="px-6 py-3 text-slate-500 text-right">009800</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-3 text-slate-500">05</td>
+<td class="px-6 py-3 text-slate-500">N3WB</td>
+<td class="px-6 py-3 text-slate-500 text-right">008500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="flex px-4 py-8 justify-center mt-auto">
+<button class="flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-14 px-8 bg-primary hover:bg-primary/90 text-background-dark text-lg font-bold leading-normal tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(255,105,51,0.4)] border border-primary/50 relative group">
+<span class="absolute inset-0 w-full h-full bg-white/20 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
+<span class="relative flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">restart_alt</span>
+              PRESS ENTER TO RESTART
+            </span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-4 left-4 text-xs font-mono text-slate-500 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+  CRITICAL HULL FAILURE DETECTED
+</div>
+<div class="absolute bottom-4 right-4 text-xs font-mono text-slate-500">
+  PRESS [ESC] TO EXIT TO OS
+</div>
+</body></html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Astro Blaster Start Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&amp;family=DM+Sans:opsz,wght@9..40,400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ff6933",
+                        "accent": "#00d4ff",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#1a1a1a",
+                        "panel-bg": "rgba(26, 26, 26, 0.85)",
+                        "panel-border": "rgba(0, 212, 255, 0.3)",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["DM Sans", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    backgroundImage: {
+                        'crt-lines': 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+                        'grid-pattern': 'linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px)',
+                    },
+                    backgroundSize: {
+                        'crt': '100% 4px, 3px 100%',
+                        'grid': '40px 40px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glitch-text {
+            position: relative;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8), 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff6933;
+            clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #00d4ff;
+            clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        .industrial-corner-tl {
+            position: absolute; top: -1px; left: -1px; width: 10px; height: 10px;
+            border-top: 2px solid theme('colors.accent'); border-left: 2px solid theme('colors.accent');
+        }
+        .industrial-corner-tr {
+            position: absolute; top: -1px; right: -1px; width: 10px; height: 10px;
+            border-top: 2px solid theme('colors.accent'); border-right: 2px solid theme('colors.accent');
+        }
+        .industrial-corner-bl {
+            position: absolute; bottom: -1px; left: -1px; width: 10px; height: 10px;
+            border-bottom: 2px solid theme('colors.accent'); border-left: 2px solid theme('colors.accent');
+        }
+        .industrial-corner-br {
+            position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px;
+            border-bottom: 2px solid theme('colors.accent'); border-right: 2px solid theme('colors.accent');
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen overflow-hidden selection:bg-primary selection:text-white">
+<!-- CRT & Grid Overlays -->
+<div class="fixed inset-0 bg-grid-pattern bg-grid opacity-30 pointer-events-none z-0"></div>
+<div class="scanlines bg-crt-lines bg-crt"></div>
+<!-- Background Space Elements (Static approximation of animation request) -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<!-- Asteroids (Abstract shapes) -->
+<div class="absolute top-[20%] left-[10%] w-32 h-32 bg-primary/10 rounded-full blur-xl"></div>
+<div class="absolute top-[60%] right-[15%] w-48 h-48 bg-primary/5 rounded-full blur-2xl"></div>
+<div class="absolute bottom-[10%] left-[30%] w-24 h-24 bg-primary/15 rounded-full blur-lg"></div>
+<!-- Stars -->
+<div class="absolute top-[15%] right-[25%] w-1 h-1 bg-accent rounded-full shadow-[0_0_10px_theme('colors.accent')]"></div>
+<div class="absolute top-[45%] left-[20%] w-1 h-1 bg-accent rounded-full shadow-[0_0_10px_theme('colors.accent')] opacity-50"></div>
+<div class="absolute bottom-[25%] right-[40%] w-1.5 h-1.5 bg-accent rounded-full shadow-[0_0_15px_theme('colors.accent')]"></div>
+</div>
+<!-- Main Content -->
+<main class="relative z-10 flex flex-col items-center justify-center min-h-screen p-8">
+<!-- Header -->
+<div class="mb-16 mt-8">
+<h1 class="text-6xl md:text-8xl font-bold tracking-widest uppercase glitch-text" data-text="ASTRO BLASTER">
+                ASTRO BLASTER
+            </h1>
+<div class="h-1 w-full bg-gradient-to-r from-transparent via-accent to-transparent mt-4 opacity-50"></div>
+</div>
+<div class="flex flex-col md:flex-row gap-12 w-full max-w-5xl items-center justify-center">
+<!-- Menu Buttons -->
+<div class="flex flex-col gap-6 w-full max-w-sm">
+<button class="relative group flex items-center justify-center h-16 px-8 bg-black/40 border border-accent/50 text-white text-xl font-bold tracking-widest uppercase transition-all duration-200 hover:bg-primary/20 hover:border-primary hover:shadow-[0_0_20px_theme('colors.primary')]">
+<span class="absolute inset-y-0 left-0 w-1 bg-primary group-hover:w-2 transition-all"></span>
+<span class="z-10 relative drop-shadow-[0_0_5px_theme('colors.primary')]">NEW GAME</span>
+<span class="absolute inset-y-0 right-0 w-1 bg-primary group-hover:w-2 transition-all"></span>
+</button>
+<button class="relative group flex items-center justify-center h-16 px-8 bg-black/40 border border-accent/50 text-slate-300 text-xl font-bold tracking-widest uppercase transition-all duration-200 hover:bg-primary/10 hover:border-primary hover:text-white hover:shadow-[0_0_15px_rgba(255,105,51,0.5)]">
+<span class="absolute inset-y-0 left-0 w-1 bg-accent/50 group-hover:bg-primary transition-colors"></span>
+<span class="z-10 relative">CONTROLS</span>
+</button>
+<button class="relative group flex items-center justify-center h-16 px-8 bg-black/40 border border-accent/50 text-slate-300 text-xl font-bold tracking-widest uppercase transition-all duration-200 hover:bg-primary/10 hover:border-primary hover:text-white hover:shadow-[0_0_15px_rgba(255,105,51,0.5)]">
+<span class="absolute inset-y-0 left-0 w-1 bg-accent/50 group-hover:bg-primary transition-colors"></span>
+<span class="z-10 relative">HIGH SCORES</span>
+</button>
+</div>
+<!-- Controls Panel -->
+<div class="relative w-full max-w-sm bg-panel-bg border border-panel-border p-8 backdrop-blur-sm">
+<!-- Industrial Corners -->
+<div class="industrial-corner-tl"></div>
+<div class="industrial-corner-tr"></div>
+<div class="industrial-corner-bl"></div>
+<div class="industrial-corner-br"></div>
+<div class="flex items-center justify-between mb-6 pb-2 border-b border-accent/30">
+<h3 class="text-accent text-lg font-bold tracking-widest uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">settings_input_component</span>
+                        SYS.CONTROLS
+                    </h3>
+<span class="text-xs font-mono text-slate-500">v1.0.4</span>
+</div>
+<div class="space-y-6 font-mono text-sm">
+<!-- Movement -->
+<div class="flex items-center justify-between group">
+<div class="flex gap-1">
+<div class="flex flex-col items-center gap-1">
+<kbd class="flex items-center justify-center w-8 h-8 bg-black/50 border border-slate-600 rounded text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">W</kbd>
+<div class="flex gap-1">
+<kbd class="flex items-center justify-center w-8 h-8 bg-black/50 border border-slate-600 rounded text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">A</kbd>
+<kbd class="flex items-center justify-center w-8 h-8 bg-black/50 border border-slate-600 rounded text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">S</kbd>
+<kbd class="flex items-center justify-center w-8 h-8 bg-black/50 border border-slate-600 rounded text-slate-300 group-hover:border-primary group-hover:text-primary transition-colors">D</kbd>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-white uppercase tracking-wider">THRUST VECTORS</p>
+<p class="text-slate-400 text-xs mt-1">N/S/E/W Adjustments</p>
+</div>
+</div>
+<!-- Fire -->
+<div class="flex items-center justify-between pt-4 border-t border-slate-800/50 group">
+<kbd class="flex items-center justify-center px-4 h-8 bg-black/50 border border-slate-600 rounded text-slate-300 min-w-[100px] group-hover:border-accent group-hover:text-accent transition-colors">SPACE</kbd>
+<div class="text-right">
+<p class="text-white uppercase tracking-wider flex items-center justify-end gap-2">
+                                MAIN WEAPON
+                                <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+</p>
+<p class="text-slate-400 text-xs mt-1">Plasma Caster</p>
+</div>
+</div>
+</div>
+<!-- Footer details -->
+<div class="mt-8 text-xs font-mono text-slate-600 flex justify-between items-end">
+<p>STATUS: <span class="text-green-500">ONLINE</span></p>
+<p>MEM: 0x4F2A</p>
+</div>
+</div>
+</div>
+<!-- Bottom left HUD detail -->
+<div class="fixed bottom-4 left-4 font-mono text-xs text-slate-600 hidden md:block z-20">
+<p>A.B. ENGINE v2.4 // INITIALIZING...</p>
+<p class="text-accent/50 mt-1">&gt; CONNECTION ESTABLISHED</p>
+</div>
+</main>
+</body></html>
