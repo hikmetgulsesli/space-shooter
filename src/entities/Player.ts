@@ -1,5 +1,6 @@
-import { Bullet } from './Bullet';
+import { Bullet, bulletPool } from './Bullet';
 import { InputHandler } from '../input/InputHandler';
+import { PowerUpManager } from './PowerUp';
 
 export class Player {
     public x: number;
@@ -11,12 +12,14 @@ export class Player {
     private friction: number = 0.98;
     private rotationSpeed: number = 0.08;
     private shootCooldown: number = 0;
-    private shootCooldownMax: number = 15;
+    private baseShootCooldownMax: number = 15;
     private invulnerable: number = 0;
+    private powerUpManager: PowerUpManager;
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, powerUpManager: PowerUpManager) {
         this.x = x;
         this.y = y;
+        this.powerUpManager = powerUpManager;
     }
 
     public update(input: InputHandler, canvas: HTMLCanvasElement): void {
@@ -59,17 +62,46 @@ export class Player {
         return this.shootCooldown === 0;
     }
 
-    public shoot(): Bullet {
-        this.shootCooldown = this.shootCooldownMax;
+    /**
+     * Get current shoot cooldown max based on power-ups
+     */
+    private getShootCooldownMax(): number {
+        const multiplier = this.powerUpManager.getFireRateMultiplier();
+        return Math.floor(this.baseShootCooldownMax / multiplier);
+    }
+
+    /**
+     * Shoot bullets - returns array to support multi-shot
+     * Uses object pooling for reduced GC pressure
+     */
+    public shoot(): Bullet[] {
+        const bullets: Bullet[] = [];
+        const cooldownMax = this.getShootCooldownMax();
+        this.shootCooldown = cooldownMax;
+
         const bulletSpeed = 8;
-        const vx = Math.cos(this.angle) * bulletSpeed;
-        const vy = Math.sin(this.angle) * bulletSpeed;
-        return new Bullet(
-            this.x + Math.cos(this.angle) * 20,
-            this.y + Math.sin(this.angle) * 20,
-            vx,
-            vy
-        );
+
+        // Determine angles to shoot at
+        const angles = this.powerUpManager.isMultiShotActive()
+            ? [-0.26, 0, 0.26].map(spread => this.angle + spread) // ~-15°, 0°, +15° in radians
+            : [this.angle];
+
+        for (const angle of angles) {
+            const vx = Math.cos(angle) * bulletSpeed;
+            const vy = Math.sin(angle) * bulletSpeed;
+            
+            // Acquire from pool instead of creating new
+            const bullet = bulletPool.acquire();
+            bullet.reset(
+                this.x + Math.cos(angle) * 20,
+                this.y + Math.sin(angle) * 20,
+                vx,
+                vy
+            );
+            bullets.push(bullet);
+        }
+
+        return bullets;
     }
 
     public render(ctx: CanvasRenderingContext2D): void {
