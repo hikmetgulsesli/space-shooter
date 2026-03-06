@@ -46,32 +46,36 @@ export class InputHandler {
 
   public isUp(): boolean {
     // Touch joystick up (negative Y is up on screen)
-    if (this.touchHandler?.getJoystickY() !== 0) {
-      return this.touchHandler.getJoystickY() < -0.3;
+    const joystickY = this.touchHandler?.getJoystickY() ?? 0;
+    if (joystickY !== 0) {
+      return joystickY < -0.3;
     }
     return this.keys.has('w') || this.keys.has('arrowup');
   }
 
   public isDown(): boolean {
     // Touch joystick down
-    if (this.touchHandler?.getJoystickY() !== 0) {
-      return this.touchHandler.getJoystickY() > 0.3;
+    const joystickY = this.touchHandler?.getJoystickY() ?? 0;
+    if (joystickY !== 0) {
+      return joystickY > 0.3;
     }
     return this.keys.has('s') || this.keys.has('arrowdown');
   }
 
   public isLeft(): boolean {
     // Touch joystick left
-    if (this.touchHandler?.getJoystickX() !== 0) {
-      return this.touchHandler.getJoystickX() < -0.3;
+    const joystickX = this.touchHandler?.getJoystickX() ?? 0;
+    if (joystickX !== 0) {
+      return joystickX < -0.3;
     }
     return this.keys.has('a') || this.keys.has('arrowleft');
   }
 
   public isRight(): boolean {
     // Touch joystick right
-    if (this.touchHandler?.getJoystickX() !== 0) {
-      return this.touchHandler.getJoystickX() > 0.3;
+    const joystickX = this.touchHandler?.getJoystickX() ?? 0;
+    if (joystickX !== 0) {
+      return joystickX > 0.3;
     }
     return this.keys.has('d') || this.keys.has('arrowright');
   }

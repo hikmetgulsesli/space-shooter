@@ -127,6 +127,10 @@ export class Asteroid {
         return this.size;
     }
 
+    public getColor(): string {
+        return TYPE_MODIFIERS[this.type].strokeColor;
+    }
+
     public render(ctx: CanvasRenderingContext2D): void {
         ctx.save();
         ctx.translate(this.x, this.y);

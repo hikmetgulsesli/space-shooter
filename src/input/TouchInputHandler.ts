@@ -60,67 +60,20 @@ export class TouchInputHandler {
     this.joystickZone = document.createElement('div');
     this.joystickZone.id = 'touchJoystick';
     this.joystickZone.className = 'touch-control joystick-zone';
-    this.joystickZone.style.cssText = `
-      position: absolute;
-      left: 20px;
-      bottom: 20px;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: rgba(87, 176, 255, 0.1);
-      border: 2px solid rgba(87, 176, 255, 0.3);
-      display: none;
-      touch-action: none;
-      z-index: 100;
-    `;
 
     // Create joystick knob
     this.joystickKnob = document.createElement('div');
     this.joystickKnob.className = 'joystick-knob';
-    this.joystickKnob.style.cssText = `
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: rgba(87, 176, 255, 0.5);
-      border: 2px solid rgba(87, 176, 255, 0.8);
-      box-shadow: 0 0 10px rgba(87, 176, 255, 0.5);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      left: 50%;
-      top: 50%;
-    `;
     this.joystickZone.appendChild(this.joystickKnob);
 
     // Create fire button
     this.fireButton = document.createElement('div');
     this.fireButton.id = 'touchFireButton';
     this.fireButton.className = 'touch-control fire-button';
-    this.fireButton.style.cssText = `
-      position: absolute;
-      right: 20px;
-      bottom: 20px;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: rgba(248, 81, 73, 0.2);
-      border: 2px solid rgba(248, 81, 73, 0.5);
-      display: none;
-      touch-action: none;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(248, 81, 73, 0.8);
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      font-weight: bold;
-      user-select: none;
-    `;
     this.fireButton.textContent = 'FIRE';
 
-    // Add to game screen
-    const gameScreen = document.getElementById('gameScreen');
+    // Add to game screen (use canvas parent for flexibility)
+    const gameScreen = this.canvas.parentElement;
     if (gameScreen) {
       gameScreen.appendChild(this.joystickZone);
       gameScreen.appendChild(this.fireButton);
@@ -280,8 +233,7 @@ export class TouchInputHandler {
   private handleFireStart(): void {
     this.touchState.fireActive = true;
     if (this.fireButton) {
-      this.fireButton.style.background = 'rgba(248, 81, 73, 0.5)';
-      this.fireButton.style.boxShadow = '0 0 20px rgba(248, 81, 73, 0.8)';
+      this.fireButton.classList.add('active');
     }
   }
 
@@ -291,8 +243,7 @@ export class TouchInputHandler {
   private handleFireEnd(): void {
     this.touchState.fireActive = false;
     if (this.fireButton) {
-      this.fireButton.style.background = 'rgba(248, 81, 73, 0.2)';
-      this.fireButton.style.boxShadow = 'none';
+      this.fireButton.classList.remove('active');
     }
   }
 
