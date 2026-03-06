@@ -1,146 +1,76 @@
 [
   {
     "screenId": "main-menu",
-    "screenTitle": "Asteroid Defender Main Menu",
+    "screenTitle": "Asteroid Blaster Main Menu Screen",
     "deviceType": "DESKTOP",
     "elements": [
       {
         "type": "button",
-        "label": "settings",
-        "line": 67
+        "label": "START GAME\nchevron_right",
+        "line": 89
       },
       {
         "type": "button",
-        "label": "chat",
-        "line": 70
+        "label": "HIGH SCORES\nchevron_right",
+        "line": 93
       },
       {
         "type": "button",
-        "label": "play_arrow\n                        START GAME",
+        "label": "SETTINGS\nchevron_right",
+        "line": 97
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
+        "line": 95
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
         "line": 99
-      },
-      {
-        "type": "button",
-        "label": "leaderboard\n                        HIGH SCORES",
-        "line": 107
-      },
-      {
-        "type": "button",
-        "label": "tune\n                        SETTINGS",
-        "line": 114
-      },
-      {
-        "type": "button",
-        "label": "power_settings_new\n                        EXIT",
-        "line": 121
-      },
-      {
-        "type": "button",
-        "label": "[icon: rocket_launch]",
-        "line": 58
-      },
-      {
-        "type": "button",
-        "label": "[icon: settings]",
-        "line": 68
-      },
-      {
-        "type": "button",
-        "label": "[icon: chat]",
-        "line": 71
-      },
-      {
-        "type": "button",
-        "label": "[icon: play_arrow]",
-        "line": 102
-      },
-      {
-        "type": "button",
-        "label": "[icon: leaderboard]",
-        "line": 110
-      },
-      {
-        "type": "button",
-        "label": "[icon: tune]",
-        "line": 117
-      },
-      {
-        "type": "button",
-        "label": "[icon: power_settings_new]",
-        "line": 123
       }
     ],
     "navigation": [],
     "buttons": [
       {
         "type": "button",
-        "label": "settings",
-        "line": 67
+        "label": "START GAME\nchevron_right",
+        "line": 89
       },
       {
         "type": "button",
-        "label": "chat",
-        "line": 70
+        "label": "HIGH SCORES\nchevron_right",
+        "line": 93
       },
       {
         "type": "button",
-        "label": "play_arrow\n                        START GAME",
+        "label": "SETTINGS\nchevron_right",
+        "line": 97
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
+        "line": 95
+      },
+      {
+        "type": "button",
+        "label": "[icon: chevron_right]",
         "line": 99
-      },
-      {
-        "type": "button",
-        "label": "leaderboard\n                        HIGH SCORES",
-        "line": 107
-      },
-      {
-        "type": "button",
-        "label": "tune\n                        SETTINGS",
-        "line": 114
-      },
-      {
-        "type": "button",
-        "label": "power_settings_new\n                        EXIT",
-        "line": 121
-      },
-      {
-        "type": "button",
-        "label": "[icon: rocket_launch]",
-        "line": 58
-      },
-      {
-        "type": "button",
-        "label": "[icon: settings]",
-        "line": 68
-      },
-      {
-        "type": "button",
-        "label": "[icon: chat]",
-        "line": 71
-      },
-      {
-        "type": "button",
-        "label": "[icon: play_arrow]",
-        "line": 102
-      },
-      {
-        "type": "button",
-        "label": "[icon: leaderboard]",
-        "line": 110
-      },
-      {
-        "type": "button",
-        "label": "[icon: tune]",
-        "line": 117
-      },
-      {
-        "type": "button",
-        "label": "[icon: power_settings_new]",
-        "line": 123
       }
     ],
     "inputs": [],
     "hardcodedData": [],
-    "totalInteractive": 13,
+    "totalInteractive": 6,
     "requiresRouter": false,
     "requiresDragDrop": false
   },
@@ -380,8 +310,233 @@
     "requiresDragDrop": false
   },
   {
-    "screenId": "game-over-screen",
+    "screenId": "game-hud",
+    "screenTitle": "Astro Blaster Retro Vector HUD Overlay",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "[icon: account_circle]",
+        "line": 40
+      },
+      {
+        "type": "button",
+        "label": "[icon: security]",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 65
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "[icon: my_location]",
+        "line": 76
+      },
+      {
+        "type": "button",
+        "label": "[icon: bolt]",
+        "line": 90
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "[icon: account_circle]",
+        "line": 40
+      },
+      {
+        "type": "button",
+        "label": "[icon: security]",
+        "line": 52
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 64
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 65
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "[icon: my_location]",
+        "line": 76
+      },
+      {
+        "type": "button",
+        "label": "[icon: bolt]",
+        "line": 90
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 7,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "pause-menu",
+    "screenTitle": "Astro Blaster Pause Menu Overlay",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "play_arrow\nRESUME\n\n[ENTER]",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "replay\nRESTART\n\n[R]",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "settings\nSETTINGS\n\n[S]",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "logout\nQUIT TO MENU\n\n[ESC]",
+        "line": 99
+      },
+      {
+        "type": "button",
+        "label": "[icon: play_arrow]",
+        "line": 77
+      },
+      {
+        "type": "button",
+        "label": "[icon: replay]",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 93
+      },
+      {
+        "type": "button",
+        "label": "[icon: logout]",
+        "line": 101
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "play_arrow\nRESUME\n\n[ENTER]",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "replay\nRESTART\n\n[R]",
+        "line": 83
+      },
+      {
+        "type": "button",
+        "label": "settings\nSETTINGS\n\n[S]",
+        "line": 91
+      },
+      {
+        "type": "button",
+        "label": "logout\nQUIT TO MENU\n\n[ESC]",
+        "line": 99
+      },
+      {
+        "type": "button",
+        "label": "[icon: play_arrow]",
+        "line": 77
+      },
+      {
+        "type": "button",
+        "label": "[icon: replay]",
+        "line": 85
+      },
+      {
+        "type": "button",
+        "label": "[icon: settings]",
+        "line": 93
+      },
+      {
+        "type": "button",
+        "label": "[icon: logout]",
+        "line": 101
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 8,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-over",
     "screenTitle": "Astro Blaster Game Over Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "TRY AGAIN",
+        "line": 70
+      },
+      {
+        "type": "button",
+        "label": "MAIN MENU",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "[icon: emoji_events]",
+        "line": 65
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "TRY AGAIN",
+        "line": 70
+      },
+      {
+        "type": "button",
+        "label": "MAIN MENU",
+        "line": 75
+      },
+      {
+        "type": "button",
+        "label": "[icon: emoji_events]",
+        "line": 65
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 3,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "game-over-screen",
+    "screenTitle": "Astro Blaster Game Over Screen (Alt)",
     "deviceType": "DESKTOP",
     "elements": [
       {
@@ -431,6 +586,242 @@
     "inputs": [],
     "hardcodedData": [],
     "totalInteractive": 4,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "high-scores",
+    "screenTitle": "Astro Blaster High Scores Leaderboard",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "arrow_back_ios\n                            Back to Menu",
+        "line": 156
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: emoji_events]",
+        "line": 101
+      },
+      {
+        "type": "button",
+        "label": "[icon: arrow_back_ios]",
+        "line": 157
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "arrow_back_ios\n                            Back to Menu",
+        "line": 156
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 79
+      },
+      {
+        "type": "button",
+        "label": "[icon: emoji_events]",
+        "line": 101
+      },
+      {
+        "type": "button",
+        "label": "[icon: arrow_back_ios]",
+        "line": 157
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 4,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "settings",
+    "screenTitle": "Astro Blaster Technical Settings Menu",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Cancel",
+        "line": 173
+      },
+      {
+        "type": "button",
+        "label": "Save Changes",
+        "line": 176
+      },
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 134
+      },
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 140
+      },
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 146
+      },
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 157
+      },
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 164
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Cancel",
+        "line": 173
+      },
+      {
+        "type": "button",
+        "label": "Save Changes",
+        "line": 176
+      }
+    ],
+    "inputs": [
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 134
+      },
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 140
+      },
+      {
+        "type": "input",
+        "label": "radio",
+        "inputType": "radio",
+        "line": 146
+      },
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 157
+      },
+      {
+        "type": "input",
+        "label": "checkbox",
+        "inputType": "checkbox",
+        "line": 164
+      }
+    ],
+    "hardcodedData": [],
+    "totalInteractive": 7,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "level-complete",
+    "screenTitle": "Astro Blaster Level Victory Screen",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Next Sector rocket_launch",
+        "line": 88
+      },
+      {
+        "type": "button",
+        "label": "grid_view System Menu",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 68
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "[icon: grid_view]",
+        "line": 96
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Next Sector rocket_launch",
+        "line": 88
+      },
+      {
+        "type": "button",
+        "label": "grid_view System Menu",
+        "line": 94
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 66
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 67
+      },
+      {
+        "type": "button",
+        "label": "[icon: star]",
+        "line": 68
+      },
+      {
+        "type": "button",
+        "label": "[icon: rocket_launch]",
+        "line": 90
+      },
+      {
+        "type": "button",
+        "label": "[icon: grid_view]",
+        "line": 96
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 7,
     "requiresRouter": false,
     "requiresDragDrop": false
   }
