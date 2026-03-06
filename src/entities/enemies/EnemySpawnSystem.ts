@@ -11,19 +11,26 @@ export class EnemySpawnSystem {
     private enemies: Enemy[] = [];
     private enemyBullets: EnemyBullet[] = [];
     private canvas: HTMLCanvasElement;
+    private useExternalSpawnInterval: boolean = false;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
     }
 
-    public update(playerX: number, playerY: number): void {
+    public update(playerX: number, playerY: number, externalSpawnInterval?: number): void {
         this.spawnTimer++;
 
-        if (this.spawnTimer >= this.spawnInterval) {
+        // Use external spawn interval from wave system if provided
+        const currentInterval = externalSpawnInterval !== undefined 
+            ? externalSpawnInterval 
+            : this.spawnInterval;
+
+        if (this.spawnTimer >= currentInterval) {
             this.spawnTimer = 0;
             this.spawnEnemy();
             
-            if (this.spawnInterval > 120) {
+            // Only auto-adjust if not using external interval
+            if (externalSpawnInterval === undefined && this.spawnInterval > 120) {
                 this.spawnInterval -= 5;
             }
         }
@@ -92,10 +99,15 @@ export class EnemySpawnSystem {
         this.enemyBullets = [];
         this.spawnTimer = 0;
         this.spawnInterval = 300;
+        this.useExternalSpawnInterval = false;
     }
 
     public getActiveEnemyCount(): number {
         return this.enemies.length;
+    }
+
+    public setSpawnInterval(interval: number): void {
+        this.spawnInterval = interval;
     }
 }
 
