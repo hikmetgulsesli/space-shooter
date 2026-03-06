@@ -9,6 +9,7 @@ export class CollisionManager {
     private spatialGrid: SpatialGrid;
     private useSpatialGrid: boolean;
     private entityIdCounter: number = 0;
+    private asteroidIdToIndex: Map<number, number> = new Map();
 
     constructor(useSpatialGrid: boolean = true) {
         this.useSpatialGrid = useSpatialGrid;
@@ -34,9 +35,10 @@ export class CollisionManager {
         if (!this.useSpatialGrid) return;
         
         this.spatialGrid.clear();
+        this.asteroidIdToIndex.clear();
         this.entityIdCounter = 0;
         
-        // Insert player
+        // Insert player (ID 0)
         this.spatialGrid.insert(
             this.entityIdCounter++,
             player.x,
@@ -47,8 +49,10 @@ export class CollisionManager {
         // Insert asteroids (offset IDs to avoid collision with player/bullets)
         for (let i = 0; i < asteroids.length; i++) {
             const asteroid = asteroids[i];
+            const asteroidId = this.entityIdCounter++;
+            this.asteroidIdToIndex.set(asteroidId, i);
             this.spatialGrid.insert(
-                this.entityIdCounter++,
+                asteroidId,
                 asteroid.x,
                 asteroid.y,
                 asteroid.getRadius()
@@ -67,15 +71,45 @@ export class CollisionManager {
         }
     }
 
-    public checkPlayerAsteroidCollision(player: Player, asteroid: Asteroid): boolean {
-        if (this.useSpatialGrid) {
-            // Spatial grid already has entities, just do distance check
-            return this.distanceCheck(
-                player.x, player.y, player.getRadius(),
-                asteroid.x, asteroid.y, asteroid.getRadius()
-            );
-        }
+    /**
+     * Get indices of asteroids that could potentially collide with the player
+     */
+    public getAsteroidsNearPlayer(player: Player): number[] {
+        if (!this.useSpatialGrid) return [];
         
+        const nearbyIds = this.spatialGrid.getNearby(
+            player.x,
+            player.y,
+            player.getRadius()
+        );
+        
+        // Filter out player ID (0) and map asteroid IDs to indices
+        return nearbyIds
+            .filter(id => id !== 0)
+            .map(id => this.asteroidIdToIndex.get(id))
+            .filter((index): index is number => index !== undefined);
+    }
+
+    /**
+     * Get indices of asteroids that could potentially collide with a bullet
+     */
+    public getAsteroidsNearBullet(bullet: Bullet): number[] {
+        if (!this.useSpatialGrid) return [];
+        
+        const nearbyIds = this.spatialGrid.getNearby(
+            bullet.x,
+            bullet.y,
+            bullet.getRadius()
+        );
+        
+        // Filter out player ID (0) and map asteroid IDs to indices
+        return nearbyIds
+            .filter(id => id !== 0)
+            .map(id => this.asteroidIdToIndex.get(id))
+            .filter((index): index is number => index !== undefined);
+    }
+
+    public checkPlayerAsteroidCollision(player: Player, asteroid: Asteroid): boolean {
         return this.distanceCheck(
             player.x, player.y, player.getRadius(),
             asteroid.x, asteroid.y, asteroid.getRadius()
