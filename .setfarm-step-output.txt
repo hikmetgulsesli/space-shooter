@@ -1,7 +1,5 @@
 STATUS: done
-BUILD_CMD: npm run build
-TEST_CMD: npm test
-LINT_CMD: npm run lint
-CI_NOTES: TypeScript project with ESLint. No test framework configured yet.
-BASELINE: build OK, lint OK, no tests
-EXISTING_CODE: true
+STORY_BRANCH: 835b10cc-US-005
+PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/8
+CHANGES: Added AsteroidType ('standard' | 'fast' | 'tank'), implemented breakApart() for large→medium→small progression, takeHit() for tank durability, visual color coding (red=fast, blue=tank), point multipliers (fast=1.5x, tank=2x), spawn distribution (70/20/10)
+TESTS: Created src/entities/Asteroid.test.ts with 18 tests covering breaking mechanics, type inheritance, speed multipliers, hit durability, point calculations, and spawn distribution

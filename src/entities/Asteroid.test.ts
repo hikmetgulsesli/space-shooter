@@ -41,14 +41,23 @@ describe('Asteroid', () => {
 
     describe('asteroid types', () => {
         it('fast asteroids move 1.5x speed', () => {
-            const standardAsteroid = new Asteroid(0, 0, 'large', 'standard');
-            const fastAsteroid = new Asteroid(0, 0, 'large', 'fast');
-            
-            const standardSpeed = Math.sqrt(standardAsteroid.vx ** 2 + standardAsteroid.vy ** 2);
-            const fastSpeed = Math.sqrt(fastAsteroid.vx ** 2 + fastAsteroid.vy ** 2);
-            
-            // Fast should be roughly 1.5x faster (allowing for random variation)
-            expect(fastSpeed).toBeGreaterThan(standardSpeed * 1.3);
+            // Sample multiple asteroids to avoid flakiness from random velocity
+            let totalStandardSpeed = 0;
+            let totalFastSpeed = 0;
+            const sampleCount = 10;
+
+            for (let i = 0; i < sampleCount; i++) {
+                const standardAsteroid = new Asteroid(0, 0, 'large', 'standard');
+                const fastAsteroid = new Asteroid(0, 0, 'large', 'fast');
+                totalStandardSpeed += Math.sqrt(standardAsteroid.vx ** 2 + standardAsteroid.vy ** 2);
+                totalFastSpeed += Math.sqrt(fastAsteroid.vx ** 2 + fastAsteroid.vy ** 2);
+            }
+
+            const avgStandardSpeed = totalStandardSpeed / sampleCount;
+            const avgFastSpeed = totalFastSpeed / sampleCount;
+
+            // Fast should be roughly 1.5x faster (on average)
+            expect(avgFastSpeed).toBeGreaterThan(avgStandardSpeed * 1.3);
         });
 
         it('fast asteroids are worth 1.5x points', () => {

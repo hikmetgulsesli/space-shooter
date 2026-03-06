@@ -1,0 +1,18 @@
+
+=== US-005: Asteroid Breaking & Variety ===
+COMPLETED: $(date -Iseconds)
+FILES CHANGED:
+- src/entities/Asteroid.ts (modified - added types, breaking, tank mechanics)
+- src/entities/Asteroid.test.ts (new - comprehensive test suite)
+- src/Game.ts (modified - integrated takeHit and breakApart)
+- src/input/TouchInputHandler.ts (new - touch input support)
+
+KEY DECISIONS:
+- Added AsteroidType export ('standard' | 'fast' | 'tank')
+- Implemented breakApart() returning fragments with inherited type
+- takeHit() returns boolean, tank asteroids survive first hit
+- Visual feedback with inner ring for damaged tank asteroids
+- Spawn probability: 70% standard, 20% fast, 10% tank
+
+PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/8
+STORY_BRANCH: 835b10cc-US-005
