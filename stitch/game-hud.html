@@ -3,145 +3,147 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Astro Blaster Gameplay HUD</title>
+<title>Astro Blaster</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#00d4ff",
-                        "background-light": "#f5f8f8",
-                        "background-dark": "#0f2023",
-                        "hud-dark": "rgba(15, 32, 35, 0.85)",
-                        "hud-border": "rgba(0, 212, 255, 0.3)",
-                        "amber-glow": "#ffb000"
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"],
-                        "ui": ["Space Grotesk", "sans-serif"]
-                    },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-                },
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00d4ff",
+              "background-light": "#f5f8f8",
+              "background-dark": "#050a0b",
+              "surface-dark": "#0a1416",
+              "border-dark": "#10262b",
             },
-        }
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
     </script>
 <style>
-        body {
-            /* Simulating game background behind the HUD */
-            background-image: radial-gradient(circle at center, #1a2a3a 0%, #050a0f 100%);
-            background-size: cover;
-            background-position: center;
+        .crt-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
         }
-        .hud-panel {
-            background-color: theme('colors.hud-dark');
-            border: 1px solid theme('colors.hud-border');
-            backdrop-filter: blur(4px);
-        }
-        .grid-bg {
+        .grid-overlay {
+            background-size: 40px 40px;
             background-image: 
-                linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
+              linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+            pointer-events: none;
+        }
+        .neon-text {
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5), 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+        .glow-box {
+            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.1), 0 0 10px rgba(0, 212, 255, 0.1);
         }
     </style>
 </head>
-<body class="font-display text-slate-100 min-h-screen m-0 p-0 overflow-hidden relative grid-bg">
-<!-- Top Navigation Bar (Score & Hi-Score) -->
-<header class="absolute top-0 left-0 w-full hud-panel border-t-0 border-l-0 border-r-0 border-b flex items-center justify-between px-8 py-3 z-50">
-<div class="flex items-center gap-4 text-primary">
-<span aria-hidden="true" class="material-symbols-outlined !text-2xl">sports_esports</span>
-<h1 class="text-2xl font-bold tracking-widest drop-shadow-[0_0_8px_rgba(0,212,255,0.8)]">SCORE: 000000</h1>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen relative overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=2000&amp;q=80')] bg-cover bg-center opacity-30" data-alt="Deep black space with starfield"></div>
 </div>
-<div class="flex items-center">
-<h2 class="text-slate-300 text-lg font-medium tracking-wider">HI-SCORE: 050000</h2>
+<div class="absolute inset-0 grid-overlay z-0"></div>
+<div class="absolute inset-0 crt-overlay z-50 mix-blend-overlay"></div>
+<div class="relative z-10 flex flex-col h-screen w-full">
+<header class="flex items-center justify-between border-b border-primary/30 bg-surface-dark/80 backdrop-blur-md px-6 py-3 border-x border-x-primary/30 mx-4 mt-4 rounded-t glow-box">
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined text-2xl">rocket_launch</span>
+<h2 class="text-primary text-xl font-bold tracking-widest neon-text">ASTRO BLASTER</h2>
+</div>
+<div class="flex flex-1 justify-end gap-10">
+<div class="flex items-center gap-8 font-mono">
+<div class="flex flex-col items-end">
+<span class="text-primary/60 text-[10px] tracking-widest uppercase">SCORE</span>
+<span class="text-primary font-bold text-lg neon-text leading-none">000000</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-primary/60 text-[10px] tracking-widest uppercase">HIGH</span>
+<span class="text-primary/80 font-bold text-lg leading-none">145000</span>
+</div>
+</div>
+<div class="flex gap-2 items-center border-l border-primary/20 pl-6">
+<span class="material-symbols-outlined text-primary neon-text" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-primary neon-text" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-primary neon-text" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
 </div>
 </header>
-<!-- Radar/Minimap (Top Right) -->
-<div class="absolute top-20 right-8 z-40">
-<div class="hud-panel w-48 h-48 rounded-full border border-primary/40 relative flex items-center justify-center shadow-[0_0_15px_rgba(0,212,255,0.15)]">
-<!-- Radar Grids -->
-<div class="absolute inset-2 border border-primary/20 rounded-full"></div>
-<div class="absolute inset-8 border border-primary/20 rounded-full"></div>
-<div class="absolute inset-14 border border-primary/20 rounded-full"></div>
-<!-- Crosshairs -->
-<div class="absolute w-full h-px bg-primary/30"></div>
-<div class="absolute h-full w-px bg-primary/30"></div>
-<!-- Player Marker -->
-<div class="absolute w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_rgba(0,212,255,1)]"></div>
-<!-- Enemy Blips -->
-<div class="absolute w-1.5 h-1.5 bg-red-500 rounded-full top-8 right-12 shadow-[0_0_5px_rgba(239,68,68,0.8)] animate-pulse"></div>
-<div class="absolute w-1.5 h-1.5 bg-red-500 rounded-full bottom-14 left-10 shadow-[0_0_5px_rgba(239,68,68,0.8)] animate-pulse" style="animation-delay: 0.5s"></div>
-<!-- Radar Sweep -->
-<div class="absolute top-1/2 left-1/2 w-24 h-24 origin-top-left bg-gradient-to-br from-primary/20 to-transparent" style="transform: rotate(-45deg); clip-path: polygon(0 0, 100% 0, 100% 100%);"></div>
-</div>
-<div class="text-center mt-2 text-xs font-ui text-primary/70 tracking-widest">SCANNER ACTIVE</div>
-</div>
-<!-- Health Indicators (Bottom Left) -->
-<div class="absolute bottom-8 left-8 z-40">
-<div class="hud-panel p-4 rounded flex flex-col gap-2">
-<p class="text-xs font-ui text-slate-400 tracking-widest mb-1">INTEGRITY</p>
-<div class="flex gap-3">
-<span class="material-symbols-outlined !text-3xl text-amber-glow drop-shadow-[0_0_8px_rgba(255,176,0,0.8)]" style="font-variation-settings: 'FILL' 1;">favorite</span>
-<span class="material-symbols-outlined !text-3xl text-amber-glow drop-shadow-[0_0_8px_rgba(255,176,0,0.8)]" style="font-variation-settings: 'FILL' 1;">favorite</span>
-<span class="material-symbols-outlined !text-3xl text-amber-glow drop-shadow-[0_0_8px_rgba(255,176,0,0.8)]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<main class="flex-1 relative flex items-center justify-center border-x border-primary/30 mx-4 bg-surface-dark/40 overflow-hidden">
+<div class="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+<div class="w-2 h-8 bg-primary/40 rounded-t blur-[2px] mb-1"></div>
+<div class="w-12 h-16 relative">
+<div class="absolute inset-x-0 bottom-0 h-10 bg-primary/20 rounded-t-full border-t-2 border-primary border-x border-x-primary/50"></div>
+<div class="absolute inset-x-4 bottom-0 h-14 bg-primary/40 rounded-t-full border-t border-primary"></div>
+<div class="absolute inset-x-5 bottom-0 h-16 bg-primary rounded-t-full shadow-[0_0_15px_rgba(0,212,255,0.8)]"></div>
+<div class="absolute -bottom-2 inset-x-2 h-4 bg-orange-500 rounded-b-full blur-[3px] opacity-80"></div>
+<div class="absolute -bottom-4 inset-x-4 h-6 bg-yellow-300 rounded-b-full blur-[4px] opacity-90"></div>
 </div>
 </div>
+<div class="absolute top-1/4 left-1/3 w-8 h-8 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center animate-pulse">
+<div class="w-4 h-4 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]"></div>
 </div>
-<!-- Weapon Status (Bottom Right) -->
-<div class="absolute bottom-8 right-8 z-40 w-72">
-<div class="hud-panel p-5 rounded flex flex-col gap-4">
-<div class="flex justify-between items-end border-b border-primary/20 pb-2">
-<p class="text-xs font-ui text-slate-400 tracking-widest">WEAPON STATUS</p>
-<p class="text-primary text-sm font-bold tracking-wider">AMMO: INFINITE</p>
+<div class="absolute top-1/3 right-1/4 w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/50 flex items-center justify-center">
+<div class="w-6 h-6 rounded-full bg-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.8)]"></div>
 </div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between">
-<p class="text-xs font-ui text-slate-300">COOLING GAUGE</p>
-<p class="text-xs font-ui text-primary">75%</p>
+<div class="absolute bottom-6 left-6 flex flex-col gap-2 w-12 h-48 justify-end bg-surface-dark/80 p-2 border border-primary/30 rounded backdrop-blur-sm glow-box">
+<div class="flex justify-between items-center -rotate-90 origin-bottom-left absolute bottom-full left-0 mb-4 whitespace-nowrap w-48">
+<p class="text-primary text-xs font-mono font-medium tracking-widest">WPN ENG</p>
+<p class="text-primary text-xs font-mono">100%</p>
 </div>
-<div class="h-2 rounded-full bg-background-dark border border-primary/30 overflow-hidden relative">
-<!-- Cooling Bar Fill -->
-<div class="h-full bg-gradient-to-r from-primary/50 to-primary rounded-full relative" style="width: 75%;">
-<!-- Overheating marker -->
-<div class="absolute top-0 right-0 bottom-0 w-4 bg-white/30 animate-pulse"></div>
+<div class="w-full bg-primary/10 rounded h-full relative overflow-hidden flex flex-col justify-end">
+<div class="w-full rounded bg-primary shadow-[0_0_10px_rgba(0,212,255,0.6)] relative z-10" style="height: 100%;">
+<div class="absolute top-0 inset-x-0 h-1 bg-white/50"></div>
+</div>
+<div class="absolute inset-0 flex flex-col justify-between py-1 z-20 pointer-events-none">
+<div class="w-full h-px bg-surface-dark/50"></div>
+<div class="w-full h-px bg-surface-dark/50"></div>
+<div class="w-full h-px bg-surface-dark/50"></div>
+<div class="w-full h-px bg-surface-dark/50"></div>
 </div>
 </div>
 </div>
-<!-- Secondary Weapon Info -->
-<div class="flex items-center gap-3 mt-1">
-<div class="w-8 h-8 rounded bg-background-dark border border-primary/40 flex items-center justify-center">
-<span class="material-symbols-outlined !text-sm text-primary">rocket_launch</span>
+<div class="absolute top-6 right-6 flex flex-col gap-2 bg-surface-dark/80 p-3 border border-primary/30 rounded backdrop-blur-sm glow-box min-w-[150px]">
+<p class="text-primary/60 text-[10px] font-mono tracking-widest uppercase border-b border-primary/20 pb-1 mb-1">Target Lock</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-red-500 text-sm">my_location</span>
+<span class="text-red-400 text-xs font-mono">ENGAGED</span>
 </div>
-<div class="flex-1">
-<p class="text-xs font-ui text-slate-400">SECONDARY</p>
-<div class="flex gap-1 mt-1">
-<div class="h-1.5 flex-1 bg-primary rounded-sm shadow-[0_0_5px_rgba(0,212,255,0.6)]"></div>
-<div class="h-1.5 flex-1 bg-primary rounded-sm shadow-[0_0_5px_rgba(0,212,255,0.6)]"></div>
-<div class="h-1.5 flex-1 bg-primary/20 rounded-sm"></div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-primary/50 text-xs font-mono">DIST:</span>
+<span class="text-primary text-xs font-mono">4.2k</span>
 </div>
 </div>
+<div class="absolute top-6 left-6 bg-surface-dark/80 p-3 border border-primary/30 rounded backdrop-blur-sm glow-box">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border-2 border-primary/50 flex items-center justify-center relative">
+<div class="absolute inset-1 rounded-full border border-primary/30 border-t-primary animate-spin" style="animation-duration: 3s;"></div>
+<span class="material-symbols-outlined text-primary text-lg">radar</span>
+</div>
+<div class="flex flex-col">
+<span class="text-primary/60 text-[10px] font-mono tracking-widest uppercase">Sector</span>
+<span class="text-primary text-sm font-mono font-bold">ALPHA-7</span>
 </div>
 </div>
 </div>
-<!-- Center Reticle (Decorative, non-interactive) -->
-<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none opacity-50">
-<div class="relative w-32 h-32">
-<!-- Corner Brackets -->
-<div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/60"></div>
-<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/60"></div>
-<div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/60"></div>
-<div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/60"></div>
-<!-- Center Dot -->
-<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-primary rounded-full shadow-[0_0_4px_rgba(0,212,255,1)]"></div>
+</main>
+<footer class="flex items-center justify-center border-t border-primary/30 bg-surface-dark/80 backdrop-blur-md px-6 py-2 border-x border-x-primary/30 mx-4 mb-4 rounded-b glow-box">
+<div class="flex items-center gap-4">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_5px_rgba(0,212,255,0.8)]"></span>
+<p class="text-primary text-sm font-mono tracking-[0.2em] uppercase neon-text">WAVE 1</p>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_5px_rgba(0,212,255,0.8)]"></span>
 </div>
-</div>
-<!-- Threat Warnings (Bottom Center) -->
-<div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-40 text-center pointer-events-none">
-<p class="text-red-500 font-ui text-sm tracking-[0.2em] font-bold drop-shadow-[0_0_5px_rgba(239,68,68,0.8)] opacity-70 animate-pulse">WARNING: HOSTILES APPROACHING</p>
+</footer>
 </div>
 </body></html>

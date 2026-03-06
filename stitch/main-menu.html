@@ -3,111 +3,136 @@
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Astro Blaster Main Menu</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Astro Blaster Main Menu Screen</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&amp;family=DM+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#00d4ff",
-              "background-light": "#f5f8f8",
-              "background-dark": "#0f2023",
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00d4ff",
+                        "background-light": "#f0f4f8",
+                        "background-dark": "#0d1117",
+                        "panel": "#161b22",
+                        "panel-border": "#30363d"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px)"
+                    }
+                },
             },
-            fontFamily: {
-              "display": ["Space Grotesk", "sans-serif"],
-              "mono": ["JetBrains Mono", "monospace"]
-            },
-            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-          },
-        },
-      }
+        }
     </script>
 <style>
         .grid-bg {
-            background-image: 
-                linear-gradient(to right, rgba(0, 212, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
             background-size: 40px 40px;
+            background-position: center center;
         }
         .text-glow {
-            text-shadow: 0 0 15px rgba(0, 212, 255, 0.6), 0 0 30px rgba(0, 212, 255, 0.3);
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
         }
-        .box-glow {
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.1) inset;
+        .corner-bracket {
+            position: relative;
         }
+        .corner-bracket::before, .corner-bracket::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: #00d4ff;
+            border-style: solid;
+        }
+        .corner-bracket-tl::before { top: 0; left: 0; border-width: 2px 0 0 2px; }
+        .corner-bracket-tr::after { top: 0; right: 0; border-width: 2px 2px 0 0; }
+        .corner-bracket-bl::before { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+        .corner-bracket-br::after { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased overflow-hidden selection:bg-primary selection:text-background-dark">
-<div class="relative min-h-screen w-full flex flex-col items-center justify-center grid-bg">
-<!-- Floating particles effect simulated with absolute divs -->
-<div class="absolute inset-0 overflow-hidden pointer-events-none opacity-50">
-<div class="absolute top-[20%] left-[15%] w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_#00d4ff]"></div>
-<div class="absolute top-[60%] left-[80%] w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_10px_#00d4ff] opacity-70"></div>
-<div class="absolute top-[80%] left-[25%] w-0.5 h-0.5 bg-primary rounded-full shadow-[0_0_5px_#00d4ff]"></div>
-<div class="absolute top-[30%] left-[70%] w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_#00d4ff] opacity-40"></div>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-body min-h-screen overflow-hidden flex flex-col relative">
+<!-- Background Grid -->
+<div class="absolute inset-0 bg-grid-pattern grid-bg pointer-events-none z-0"></div>
+<!-- Star particles (abstract representation via radial gradients) -->
+<div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-[20%] left-[10%] w-1 h-1 bg-white rounded-full opacity-50 shadow-[0_0_5px_#fff]"></div>
+<div class="absolute top-[60%] left-[80%] w-1.5 h-1.5 bg-primary rounded-full opacity-30 shadow-[0_0_8px_#00d4ff]"></div>
+<div class="absolute top-[80%] left-[30%] w-0.5 h-0.5 bg-white rounded-full opacity-40"></div>
+<div class="absolute top-[30%] left-[70%] w-1 h-1 bg-white rounded-full opacity-60 shadow-[0_0_4px_#fff]"></div>
 </div>
-<!-- Industrial UI Frame -->
-<div class="absolute inset-4 border border-primary/20 pointer-events-none z-0">
-<!-- Corner Accents -->
+<!-- UI Frame -->
+<div class="absolute inset-4 border border-panel-border z-0 pointer-events-none rounded">
 <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/50"></div>
 <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/50"></div>
 <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/50"></div>
 <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/50"></div>
-<!-- Top indicator -->
-<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background-dark px-4 flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-primary/40 animate-pulse"></span>
-<span class="text-[10px] font-mono tracking-widest text-primary/40">SYS_ONLINE</span>
 </div>
+<!-- Main Content -->
+<div class="relative z-10 flex flex-col h-screen px-8 py-8 w-full max-w-[1200px] mx-auto">
+<!-- Top Bar (Subtle) -->
+<header class="flex items-center justify-between mb-auto opacity-70">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span class="font-mono text-xs tracking-widest uppercase">v1.4.2_build</span>
 </div>
-<!-- Main Content Container -->
-<div class="relative z-10 flex flex-col items-center justify-center w-full max-w-2xl px-6 py-12">
-<!-- Header / Title -->
-<div class="mb-16 text-center relative">
-<!-- Decorative scanline behind title -->
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent -z-10"></div>
-<h1 class="text-6xl md:text-8xl font-bold tracking-[0.05em] text-white text-glow">
+<div class="flex gap-4">
+<span class="w-2 h-2 bg-primary/40 rounded-full"></span>
+<span class="w-2 h-2 bg-primary/40 rounded-full"></span>
+<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+</div>
+</header>
+<!-- Center Menu -->
+<div class="flex flex-col items-center justify-center flex-1 w-full max-w-2xl mx-auto">
+<!-- Title -->
+<div class="mb-16 relative p-8 corner-bracket corner-bracket-tl corner-bracket-tr corner-bracket-bl corner-bracket-br">
+<h1 class="text-6xl md:text-8xl font-display font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-primary/80 text-glow tracking-tighter text-center">
                     ASTRO<br/>BLASTER
                 </h1>
-<p class="mt-4 text-sm font-mono text-primary/70 tracking-[0.3em] uppercase">Tactical Space Combat Simulator</p>
 </div>
 <!-- Menu Buttons -->
-<nav class="flex flex-col gap-4 w-full max-w-xs relative">
-<!-- Vertical connecting line -->
-<div class="absolute left-[-20px] top-4 bottom-4 w-px bg-primary/20"></div>
-<button class="group relative w-full flex items-center justify-between px-6 py-4 border border-primary/30 bg-background-dark/80 hover:bg-primary transition-all duration-300 box-glow overflow-hidden cursor-pointer">
-<!-- Terminal accent line -->
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/50 group-hover:bg-background-dark transition-colors"></div>
-<span class="font-mono text-lg font-bold tracking-widest text-primary group-hover:text-background-dark transition-colors z-10">&gt; START GAME</span>
-<span class="material-symbols-outlined text-primary group-hover:text-background-dark transition-colors z-10 text-xl">play_arrow</span>
+<div class="flex flex-col gap-4 w-full max-w-[320px]">
+<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">START GAME</span>
+<span class="material-symbols-outlined absolute right-4 opacity-0 group-hover:opacity-100 text-primary transform -translate-x-2 group-hover:translate-x-0 transition-all">chevron_right</span>
 </button>
-<button class="group relative w-full flex items-center justify-between px-6 py-4 border border-primary/30 bg-background-dark/80 hover:bg-primary transition-all duration-300 box-glow overflow-hidden cursor-pointer">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/50 group-hover:bg-background-dark transition-colors"></div>
-<span class="font-mono text-lg font-bold tracking-widest text-primary group-hover:text-background-dark transition-colors z-10">&gt; HIGH SCORES</span>
-<span class="material-symbols-outlined text-primary group-hover:text-background-dark transition-colors z-10 text-xl">leaderboard</span>
+<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">HIGH SCORES</span>
 </button>
-<button class="group relative w-full flex items-center justify-between px-6 py-4 border border-primary/30 bg-background-dark/80 hover:bg-primary transition-all duration-300 box-glow overflow-hidden cursor-pointer">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary/50 group-hover:bg-background-dark transition-colors"></div>
-<span class="font-mono text-lg font-bold tracking-widest text-primary group-hover:text-background-dark transition-colors z-10">&gt; SETTINGS</span>
-<span class="material-symbols-outlined text-primary group-hover:text-background-dark transition-colors z-10 text-xl">settings</span>
+<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden">
+<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+<span class="font-display font-bold text-lg tracking-widest group-hover:text-primary transition-colors group-hover:text-glow">SETTINGS</span>
 </button>
-</nav>
+<button class="group relative flex items-center justify-center w-full h-14 bg-panel border border-panel-border hover:border-primary hover:bg-primary/10 transition-all duration-300 rounded overflow-hidden mt-4">
+<div class="absolute inset-y-0 left-0 w-1 bg-primary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom"></div>
+<span class="font-display font-bold text-lg tracking-widest text-slate-400 group-hover:text-primary transition-colors group-hover:text-glow">EXIT</span>
+</button>
 </div>
-<!-- Footer / Version -->
-<div class="absolute bottom-8 right-8 flex items-center gap-2 text-primary/50 font-mono text-xs z-20">
-<span class="material-symbols-outlined text-[14px]">terminal</span>
-<span>v1.0.4-BETA</span>
 </div>
-<!-- Bottom left system info -->
-<div class="absolute bottom-8 left-8 flex flex-col gap-1 text-primary/30 font-mono text-[10px] z-20 hidden md:flex">
-<span>RAM: 4096MB ALLOCATED</span>
-<span>GPU: NEURAL ENGINE ACTIVE</span>
-<span>NET: CONNECTED [SECURE]</span>
+<!-- Footer / Status -->
+<footer class="mt-auto flex justify-between items-end w-full pt-8 border-t border-panel-border/50">
+<div class="flex items-center gap-2 text-primary">
+<div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse shadow-[0_0_5px_#00d4ff]"></div>
+<span class="font-mono text-[10px] tracking-wider uppercase opacity-80">SYSTEM: ONLINE</span>
 </div>
+<div class="font-mono text-[10px] tracking-wider text-slate-500 uppercase flex flex-col items-end">
+<span>[UPLINK ESTABLISHED]</span>
+<span>LATENCY: 12ms</span>
+</div>
+</footer>
 </div>
 </body></html>
