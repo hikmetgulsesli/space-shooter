@@ -1,14 +1,29 @@
-export class Particle {
-    public x: number;
-    public y: number;
-    private vx: number;
-    private vy: number;
-    private life: number = 1;
-    private decay: number;
-    private color: string;
-    private size: number;
+import { ObjectPool } from '../utils/ObjectPool';
 
-    constructor(x: number, y: number, color: string) {
+/**
+ * Pooled Particle class for reduced GC pressure
+ */
+export class Particle {
+    public x: number = 0;
+    public y: number = 0;
+    private vx: number = 0;
+    private vy: number = 0;
+    private life: number = 1;
+    private decay: number = 0.02;
+    private color: string = '#fff';
+    private size: number = 2;
+    private active: boolean = false;
+
+    constructor(x?: number, y?: number, color?: string) {
+        if (x !== undefined && y !== undefined && color !== undefined) {
+            this.reset(x, y, color);
+        }
+    }
+
+    /**
+     * Reset the particle for reuse from pool
+     */
+    public reset(x: number, y: number, color: string): void {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -20,21 +35,29 @@ export class Particle {
         
         this.decay = 0.02 + Math.random() * 0.03;
         this.size = 2 + Math.random() * 3;
+        this.life = 1;
+        this.active = true;
     }
 
     public update(): void {
+        if (!this.active) return;
         this.x += this.vx;
         this.y += this.vy;
         this.vx *= 0.98;
         this.vy *= 0.98;
         this.life -= this.decay;
+        if (this.life <= 0) {
+            this.active = false;
+        }
     }
 
     public isActive(): boolean {
-        return this.life > 0;
+        return this.active && this.life > 0;
     }
 
     public render(ctx: CanvasRenderingContext2D): void {
+        if (!this.active) return;
+        
         ctx.save();
         ctx.globalAlpha = this.life;
         ctx.fillStyle = this.color;
@@ -47,4 +70,20 @@ export class Particle {
         
         ctx.restore();
     }
+
+    /**
+     * Mark particle as inactive (returns to pool)
+     */
+    public deactivate(): void {
+        this.active = false;
+    }
 }
+
+/**
+ * Global particle pool instance
+ */
+export const particlePool = new ObjectPool<Particle>(
+    () => new Particle(),
+    (particle) => { particle.deactivate(); },
+    500 // Max pool size for particles (more particles than bullets)
+);
