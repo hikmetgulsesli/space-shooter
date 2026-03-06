@@ -1,57 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#09090b">
+    <meta name="description" content="A retro-futuristic space shooter game with arcade-style gameplay">
+    
     <title>Space Shooter</title>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Design System Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Touch Control Styles -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-        }
-        #gameCanvas {
-            border: 2px solid #0ff;
-            box-shadow: 0 0 20px #0ff;
-        }
-        #ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: #0ff;
-            font-size: 18px;
-            text-shadow: 0 0 10px #0ff;
-        }
-        #gameOver {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #f00;
-            font-size: 48px;
-            text-align: center;
-            display: none;
-            text-shadow: 0 0 20px #f00;
-        }
-        #instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #888;
-            font-size: 14px;
-            text-align: center;
-        }
-        /* Touch Control Styles */
         .touch-control {
             position: absolute;
             display: none;
@@ -105,18 +71,59 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="ui">
-        <div>SCORE: <span id="score">0</span></div>
-        <div>LIVES: <span id="lives">3</span></div>
+    <div class="game-container">
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        
+        <!-- UI Overlay System -->
+        <div class="ui-overlay">
+            <!-- HUD (Heads-Up Display) -->
+            <div class="hud">
+                <div class="hud-section">
+                    <div class="hud-item">
+                        <span class="hud-label">Score</span>
+                        <span class="hud-value" id="score">0</span>
+                    </div>
+                    <div class="hud-item">
+                        <span class="hud-label">Lives</span>
+                        <span class="hud-value" id="lives">3</span>
+                    </div>
+                </div>
+                
+                <!-- Power-Up Indicators -->
+                <div class="power-ups" id="powerUps">
+                    <!-- Dynamic power-up indicators will be inserted here -->
+                </div>
+            </div>
+            
+            <!-- Main Menu Screen -->
+            <div class="game-screen main-menu" id="mainMenu">
+                <h1 class="game-title">Space Shooter</h1>
+                <p class="game-subtitle">Defend the galaxy from the asteroid threat</p>
+                <button class="btn btn-primary" id="startBtn">Start Game</button>
+                <div style="margin-top: var(--space-8);">
+                    <p style="color: var(--color-text-muted); font-size: var(--text-sm);">
+                        High Score: <span id="highScore">0</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Game Over Screen -->
+            <div class="game-screen game-over" id="gameOver">
+                <h2 class="game-over-title">Game Over</h2>
+                <p class="game-over-score">Final Score: <span id="finalScore">0</span></p>
+                <button class="btn btn-accent" id="restartBtn">Play Again</button>
+            </div>
+            
+            <!-- Instructions -->
+            <div class="instructions">
+                <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to Move · 
+                <kbd>SPACE</kbd> to Shoot · 
+                <kbd>R</kbd> to Restart
+            </div>
+        </div>
     </div>
-    <div id="gameOver">
-        GAME OVER<br>
-        <span style="font-size: 24px;">Press R to Restart</span>
-    </div>
-    <div id="instructions">
-        WASD: Move | SPACE: Shoot | R: Restart
-    </div>
+    
     <script type="module" src="index.js"></script>
 </body>
 </html>
