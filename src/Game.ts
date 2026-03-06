@@ -4,17 +4,31 @@ import { Bullet } from './entities/Bullet';
 import { Particle } from './effects/Particle';
 import { InputHandler } from './input/InputHandler';
 import { CollisionManager } from './collision/CollisionManager';
-import { PowerUp, PowerUpManager, PowerUpType } from './entities/PowerUp';
+import { PowerUp, PowerUpManager } from './entities/PowerUp';
 import { SoundManager } from './audio/SoundManager';
+import { EnemySpawnSystem } from './entities/enemies';
+import { ScoreManager } from './score/ScoreManager';
 
 // Constants for asteroid size thresholds
 const SMALL_ASTEROID_MAX_RADIUS = 20;
 const MEDIUM_ASTEROID_MAX_RADIUS = 32;
 
+/**
+ * Game State Enum
+ * Defines all possible states of the game
+ */
+export enum GameState {
+    MENU = 'MENU',
+    PLAYING = 'PLAYING',
+    PAUSED = 'PAUSED',
+    GAMEOVER = 'GAMEOVER',
+    HIGHSCORES = 'HIGHSCORES'
+}
+
 export class Game {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
-    private player: Player;
+    private player: Player | null = null;
     private asteroids: Asteroid[] = [];
     private bullets: Bullet[] = [];
     private particles: Particle[] = [];
@@ -23,18 +37,30 @@ export class Game {
     private collisionManager: CollisionManager;
     private powerUpManager: PowerUpManager;
     private soundManager: SoundManager;
+    private enemySpawnSystem: EnemySpawnSystem | null = null;
+    private scoreManager: ScoreManager;
 
     private score: number = 0;
     private lives: number = 3;
-    private gameOver: boolean = false;
+    private wave: number = 1;
+    private gameState: GameState = GameState.MENU;
     private asteroidSpawnTimer: number = 0;
     private asteroidSpawnInterval: number = 120;
     private lastFrameTime: number = 0;
 
+    // UI Elements
+    private mainMenuScreen: HTMLElement;
+    private gameScreen: HTMLElement;
+    private pauseMenuScreen: HTMLElement;
+    private gameOverScreen: HTMLElement;
     private scoreElement: HTMLElement;
     private livesElement: HTMLElement;
-    private gameOverElement: HTMLElement;
-    private powerUpsElement: HTMLElement;
+    private highScoreDisplay: HTMLElement;
+    private finalScoreElement: HTMLElement;
+    private highScoreFinalElement: HTMLElement;
+    private totalGamesElement: HTMLElement;
+    private totalScoreElement: HTMLElement;
+    private newRecordIndicator: HTMLElement;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
@@ -42,32 +68,48 @@ export class Game {
         if (!ctx) throw new Error('Could not get canvas context');
         this.ctx = ctx;
 
-        this.powerUpManager = new PowerUpManager();
-        this.player = new Player(canvas.width / 2, canvas.height / 2, this.powerUpManager);
+        this.scoreManager = new ScoreManager();
         this.inputHandler = new InputHandler();
         this.collisionManager = new CollisionManager();
         this.soundManager = new SoundManager();
+        this.powerUpManager = new PowerUpManager();
 
+        // Get UI elements
+        this.mainMenuScreen = document.getElementById('mainMenu')!;
+        this.gameScreen = document.getElementById('gameScreen')!;
+        this.pauseMenuScreen = document.getElementById('pauseMenu')!;
+        this.gameOverScreen = document.getElementById('gameOver')!;
         this.scoreElement = document.getElementById('score')!;
         this.livesElement = document.getElementById('lives')!;
-        this.gameOverElement = document.getElementById('gameOver')!;
-        this.powerUpsElement = document.getElementById('powerUps')!;
+        this.highScoreDisplay = document.getElementById('highScoreDisplay')!;
+        this.finalScoreElement = document.getElementById('finalScore')!;
+        this.highScoreFinalElement = document.getElementById('highScoreFinal')!;
+        this.totalGamesElement = document.getElementById('totalGames')!;
+        this.totalScoreElement = document.getElementById('totalScore')!;
+        this.newRecordIndicator = document.getElementById('newRecordIndicator')!;
 
         this.setupEventListeners();
-        this.setupMuteButton();
+        this.setupButtonListeners();
+        this.updateHighScoreDisplay();
     }
 
     private setupEventListeners(): void {
+        // Keyboard controls
         window.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'r' && this.gameOver) {
+            if (e.key.toLowerCase() === 'r' && this.gameState === GameState.GAMEOVER) {
                 this.restart();
+            }
+            if (e.key === 'Escape' && this.gameState === GameState.PLAYING) {
+                this.pause();
+            }
+            if (e.key === 'Escape' && this.gameState === GameState.PAUSED) {
+                this.resume();
             }
         });
 
         // Initialize audio on first user interaction
         const initAudio = (): void => {
             this.soundManager.init();
-            this.soundManager.startBackgroundMusic();
             window.removeEventListener('click', initAudio);
             window.removeEventListener('keydown', initAudio);
         };
@@ -75,46 +117,133 @@ export class Game {
         window.addEventListener('keydown', initAudio);
     }
 
-    private setupMuteButton(): void {
-        const muteBtn = document.getElementById('muteBtn');
-        if (muteBtn) {
-            this.updateMuteButtonState(muteBtn);
-            muteBtn.addEventListener('click', () => {
-                this.soundManager.toggleMute();
-                this.updateMuteButtonState(muteBtn);
-            });
+    private setupButtonListeners(): void {
+        // Main menu buttons
+        const startGameBtn = document.getElementById('startGameBtn');
+        if (startGameBtn) {
+            startGameBtn.addEventListener('click', () => this.startGame());
+        }
+
+        // Pause menu buttons
+        const resumeBtn = document.getElementById('resumeBtn');
+        if (resumeBtn) {
+            resumeBtn.addEventListener('click', () => this.resume());
+        }
+
+        const restartFromPauseBtn = document.getElementById('restartFromPauseBtn');
+        if (restartFromPauseBtn) {
+            restartFromPauseBtn.addEventListener('click', () => this.restart());
+        }
+
+        const quitToMenuBtn = document.getElementById('quitToMenuBtn');
+        if (quitToMenuBtn) {
+            quitToMenuBtn.addEventListener('click', () => this.returnToMenu());
+        }
+
+        // Game over buttons
+        const restartBtn = document.getElementById('restartBtn');
+        if (restartBtn) {
+            restartBtn.addEventListener('click', () => this.restart());
+        }
+
+        const mainMenuBtn = document.getElementById('mainMenuBtn');
+        if (mainMenuBtn) {
+            mainMenuBtn.addEventListener('click', () => this.returnToMenu());
         }
     }
 
-    private updateMuteButtonState(button: HTMLElement): void {
-        const isMuted = this.soundManager.getIsMuted();
-        button.classList.toggle('muted', isMuted);
-        button.setAttribute('aria-label', isMuted ? 'Unmute audio' : 'Mute audio');
-        button.textContent = isMuted ? '🔇' : '🔊';
+    private updateHighScoreDisplay(): void {
+        if (this.highScoreDisplay) {
+            this.highScoreDisplay.textContent = this.scoreManager.getHighScore().toString();
+        }
+    }
+
+    private showScreen(screen: GameState): void {
+        this.mainMenuScreen.classList.remove('active');
+        this.gameScreen.classList.remove('active');
+        this.pauseMenuScreen.classList.remove('active');
+        this.gameOverScreen.classList.remove('active');
+
+        switch (screen) {
+            case 'menu':
+                this.mainMenuScreen.classList.add('active');
+                break;
+            case 'playing':
+                this.gameScreen.classList.add('active');
+                break;
+            case 'paused':
+                this.gameScreen.classList.add('active');
+                this.pauseMenuScreen.classList.add('active');
+                break;
+            case 'gameOver':
+                this.gameScreen.classList.add('active');
+                this.gameOverScreen.classList.add('active');
+                break;
+        }
     }
 
     public start(): void {
+        this.showScreen('menu');
+        this.updateHighScoreDisplay();
+    }
+
+    private startGame(): void {
+        this.resetGame();
+        this.gameState = 'playing';
+        this.showScreen('playing');
+        this.soundManager.startBackgroundMusic();
         this.lastFrameTime = performance.now();
         this.gameLoop();
     }
 
-    private restart(): void {
+    private resetGame(): void {
         this.score = 0;
         this.lives = 3;
-        this.gameOver = false;
-        this.powerUpManager.clear();
-        this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
+        this.wave = 1;
         this.asteroids = [];
         this.bullets = [];
         this.particles = [];
         this.powerUps = [];
         this.asteroidSpawnTimer = 0;
+        this.asteroidSpawnInterval = 120;
+        this.powerUpManager.clear();
+
+        this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
+        this.enemySpawnSystem = new EnemySpawnSystem(this.canvas);
+
         this.updateUI();
-        this.gameOverElement.style.display = 'none';
+    }
+
+    private restart(): void {
+        this.startGame();
+    }
+
+    private pause(): void {
+        if (this.gameState !== 'playing') return;
+        this.gameState = 'paused';
+        this.showScreen('paused');
+        this.soundManager.stopBackgroundMusic();
+    }
+
+    private resume(): void {
+        if (this.gameState !== 'paused') return;
+        this.gameState = 'playing';
+        this.showScreen('playing');
         this.soundManager.startBackgroundMusic();
+        this.lastFrameTime = performance.now();
+        this.gameLoop();
+    }
+
+    private returnToMenu(): void {
+        this.gameState = 'menu';
+        this.showScreen('menu');
+        this.soundManager.stopBackgroundMusic();
+        this.updateHighScoreDisplay();
     }
 
     private gameLoop(): void {
+        if (this.gameState !== 'playing') return;
+
         const currentTime = performance.now();
         const deltaTime = currentTime - this.lastFrameTime;
         this.lastFrameTime = currentTime;
@@ -125,7 +254,7 @@ export class Game {
     }
 
     private update(deltaTime: number): void {
-        if (this.gameOver) return;
+        if (!this.player || !this.enemySpawnSystem) return;
 
         this.player.update(this.inputHandler, this.canvas);
         this.powerUpManager.update(deltaTime);
@@ -140,6 +269,7 @@ export class Game {
         this.updateBullets();
         this.updateParticles();
         this.updatePowerUps();
+        this.updateEnemies();
         this.checkCollisions();
         this.spawnAsteroids();
 
@@ -167,6 +297,12 @@ export class Game {
         });
     }
 
+    private updateEnemies(): void {
+        if (this.enemySpawnSystem && this.player) {
+            this.enemySpawnSystem.update(this.player.x, this.player.y);
+        }
+    }
+
     private updatePowerUps(): void {
         this.powerUps = this.powerUps.filter(powerUp => {
             powerUp.update(this.canvas);
@@ -175,6 +311,8 @@ export class Game {
     }
 
     private checkCollisions(): void {
+        if (!this.player || !this.enemySpawnSystem) return;
+
         // Check player-powerup collisions
         for (let i = this.powerUps.length - 1; i >= 0; i--) {
             const powerUp = this.powerUps[i];
@@ -227,6 +365,71 @@ export class Game {
                 }
             }
         }
+
+        // Check player-enemy and bullet-enemy collisions
+        const enemies = this.enemySpawnSystem.getEnemies();
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            const enemy = enemies[i];
+
+            if (this.collisionManager.checkPlayerAsteroidCollision(this.player, enemy as unknown as Asteroid)) {
+                if (this.powerUpManager.useShield()) {
+                    this.createExplosion(enemy.x, enemy.y, '#0ff');
+                    this.enemySpawnSystem.removeEnemy(enemy);
+                    continue;
+                }
+
+                this.lives--;
+                this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
+                this.enemySpawnSystem.removeEnemy(enemy);
+
+                if (this.lives <= 0) {
+                    this.endGame();
+                }
+                continue;
+            }
+
+            for (let j = this.bullets.length - 1; j >= 0; j--) {
+                const bullet = this.bullets[j];
+
+                if (this.collisionManager.checkBulletAsteroidCollision(bullet, enemy as unknown as Asteroid)) {
+                    enemy.takeDamage(10);
+                    this.bullets.splice(j, 1);
+
+                    if (!enemy.isActive()) {
+                        this.score += enemy.getPoints();
+                        this.createExplosion(enemy.x, enemy.y, '#ff6b6b');
+                        this.soundManager.play('explosionMedium');
+                        this.enemySpawnSystem.removeEnemy(enemy);
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Check player-enemy bullet collisions
+        const enemyBullets = this.enemySpawnSystem.getBullets();
+        for (let i = enemyBullets.length - 1; i >= 0; i--) {
+            const enemyBullet = enemyBullets[i];
+
+            if (enemyBullet.checkCollision(this.player.x, this.player.y, this.player.getRadius())) {
+                if (this.powerUpManager.useShield()) {
+                    enemyBullet.deactivate();
+                    this.enemySpawnSystem.removeBullet(enemyBullet);
+                    continue;
+                }
+
+                this.lives--;
+                enemyBullet.deactivate();
+                this.enemySpawnSystem.removeBullet(enemyBullet);
+                this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
+
+                if (this.lives <= 0) {
+                    this.endGame();
+                }
+            }
+        }
     }
 
     private collectPowerUp(powerUp: PowerUp): void {
@@ -238,7 +441,7 @@ export class Game {
         // Create collection effect using PowerUp.COLORS
         const color = PowerUp.COLORS[type];
         for (let i = 0; i < 10; i++) {
-            this.particles.push(new Particle(this.player.x, this.player.y, color));
+            this.particles.push(new Particle(this.player?.x ?? 0, this.player?.y ?? 0, color));
         }
     }
 
@@ -273,8 +476,26 @@ export class Game {
     }
 
     private endGame(): void {
-        this.gameOver = true;
-        this.gameOverElement.style.display = 'block';
+        this.gameState = 'gameOver';
+
+        // Record game stats
+        const wasNewHighScore = this.score > this.scoreManager.getHighScore();
+        this.scoreManager.recordGame(this.score, this.wave);
+
+        // Update game over screen
+        this.finalScoreElement.textContent = this.score.toString();
+        this.highScoreFinalElement.textContent = this.scoreManager.getHighScore().toString();
+        this.totalGamesElement.textContent = this.scoreManager.getTotalGamesPlayed().toString();
+        this.totalScoreElement.textContent = this.scoreManager.getTotalScoreAccumulated().toString();
+
+        // Show new record indicator if applicable
+        if (wasNewHighScore) {
+            this.newRecordIndicator.style.display = 'block';
+        } else {
+            this.newRecordIndicator.style.display = 'none';
+        }
+
+        this.showScreen('gameOver');
         this.soundManager.play('gameOver');
         this.soundManager.stopBackgroundMusic();
     }
@@ -282,48 +503,6 @@ export class Game {
     private updateUI(): void {
         this.scoreElement.textContent = this.score.toString();
         this.livesElement.textContent = this.lives.toString();
-
-        // Update power-up indicators
-        this.renderPowerUpIndicators();
-    }
-
-    private renderPowerUpIndicators(): void {
-        if (!this.powerUpsElement) return;
-
-        const activePowerUps = this.powerUpManager.getActivePowerUps();
-
-        // Clear existing indicators safely
-        this.powerUpsElement.textContent = '';
-
-        // Add indicators for each active power-up
-        for (const powerUp of activePowerUps) {
-            const indicator = document.createElement('div');
-            indicator.className = 'power-up-indicator';
-
-            const name = this.getPowerUpDisplayName(powerUp.type);
-            const seconds = Math.ceil(powerUp.remainingTime / 1000);
-
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = `${name} `;
-
-            const timerSpan = document.createElement('span');
-            timerSpan.className = 'power-up-timer';
-            timerSpan.textContent = `${seconds}s`;
-
-            indicator.appendChild(nameSpan);
-            indicator.appendChild(timerSpan);
-
-            this.powerUpsElement.appendChild(indicator);
-        }
-    }
-
-    private getPowerUpDisplayName(type: PowerUpType): string {
-        switch (type) {
-            case 'rapidFire': return '⚡ Rapid Fire';
-            case 'shield': return '🛡️ Shield';
-            case 'multiShot': return '✦ Multi-Shot';
-            default: return type;
-        }
     }
 
     private render(): void {
@@ -332,11 +511,12 @@ export class Game {
 
         this.drawStars();
 
-        this.player.render(this.ctx);
+        this.player?.render(this.ctx);
         this.asteroids.forEach(asteroid => asteroid.render(this.ctx));
         this.bullets.forEach(bullet => bullet.render(this.ctx));
         this.particles.forEach(particle => particle.render(this.ctx));
         this.powerUps.forEach(powerUp => powerUp.render(this.ctx));
+        this.enemySpawnSystem?.render(this.ctx);
     }
 
     private drawStars(): void {
@@ -352,4 +532,10 @@ export class Game {
         }
         this.ctx.globalAlpha = 1;
     }
+
+    // Public getters for testing
+    getScore(): number { return this.score; }
+    getLives(): number { return this.lives; }
+    getGameState(): GameState { return this.gameState; }
+    getScoreManager(): ScoreManager { return this.scoreManager; }
 }

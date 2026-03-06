@@ -18,29 +18,88 @@
             min-height: 100vh;
             font-family: 'Courier New', monospace;
             overflow: hidden;
+            color: #0ff;
         }
         #gameCanvas {
             border: 2px solid #0ff;
             box-shadow: 0 0 20px #0ff;
         }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* Main Menu Styles */
+        #mainMenu {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+        #mainMenu h1 {
+            font-size: 64px;
+            text-shadow: 0 0 30px #0ff;
+            margin-bottom: 20px;
+            letter-spacing: 8px;
+        }
+        #mainMenu .subtitle {
+            font-size: 18px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+        .high-score-display {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #0ff;
+            padding: 20px 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .high-score-display .label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .high-score-display .value {
+            font-size: 32px;
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff;
+        }
+        .menu-button {
+            background: transparent;
+            border: 2px solid #0ff;
+            color: #0ff;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .menu-button:hover {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 20px #0ff;
+        }
+
+        /* Game UI Styles */
+        #gameScreen {
+            flex-direction: column;
+        }
         #ui {
             position: absolute;
             top: 20px;
             left: 20px;
-            color: #0ff;
             font-size: 18px;
             text-shadow: 0 0 10px #0ff;
-        }
-        #gameOver {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #f00;
-            font-size: 48px;
-            text-align: center;
-            display: none;
-            text-shadow: 0 0 20px #f00;
         }
         #instructions {
             position: absolute;
@@ -51,21 +110,186 @@
             font-size: 14px;
             text-align: center;
         }
+
+        /* Game Over Screen Styles */
+        #gameOver {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.9);
+        }
+        #gameOver h1 {
+            font-size: 64px;
+            color: #f00;
+            text-shadow: 0 0 30px #f00;
+            margin-bottom: 30px;
+        }
+        .stats-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .stat-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #f00;
+            padding: 20px 30px;
+            text-align: center;
+            min-width: 150px;
+        }
+        .stat-box.highlight {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: #0ff;
+        }
+        .stat-box .label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .stat-box .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .stat-box.highlight .value {
+            color: #0ff;
+            text-shadow: 0 0 10px #0ff;
+        }
+        .new-record {
+            color: #ff0;
+            font-size: 12px;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .game-over-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        .restart-button {
+            background: transparent;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .restart-button:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+        .menu-return-button {
+            background: transparent;
+            border: 2px solid #888;
+            color: #888;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .menu-return-button:hover {
+            background: #888;
+            color: #000;
+        }
+
+        /* Pause Menu Styles */
+        #pauseMenu {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.85);
+        }
+        #pauseMenu h1 {
+            font-size: 48px;
+            color: #ff0;
+            text-shadow: 0 0 20px #ff0;
+            margin-bottom: 30px;
+        }
+        .pause-button {
+            background: transparent;
+            border: 2px solid #ff0;
+            color: #ff0;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px;
+            text-transform: uppercase;
+        }
+        .pause-button:hover {
+            background: #ff0;
+            color: #000;
+        }
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="ui">
-        <div>SCORE: <span id="score">0</span></div>
-        <div>LIVES: <span id="lives">3</span></div>
+    <!-- Main Menu Screen -->
+    <div id="mainMenu" class="screen active">
+        <h1>ASTRO BLASTER</h1>
+        <div class="subtitle">HTML5 CANVAS SPACE SHOOTER</div>
+        <div class="high-score-display">
+            <div class="label">HIGH SCORE</div>
+            <div class="value" id="highScoreDisplay">0</div>
+        </div>
+        <button class="menu-button" id="startGameBtn">Start Game</button>
     </div>
-    <div id="gameOver">
-        GAME OVER<br>
-        <span style="font-size: 24px;">Press R to Restart</span>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="screen">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="ui">
+            <div>SCORE: <span id="score">0</span></div>
+            <div>LIVES: <span id="lives">3</span></div>
+        </div>
+        <div id="instructions">
+            WASD: Move | SPACE: Shoot | P: Pause | R: Restart
+        </div>
     </div>
-    <div id="instructions">
-        WASD: Move | SPACE: Shoot | R: Restart
+
+    <!-- Pause Menu -->
+    <div id="pauseMenu" class="screen">
+        <h1>PAUSED</h1>
+        <button class="pause-button" id="resumeBtn">Resume</button>
+        <button class="pause-button" id="restartFromPauseBtn">Restart</button>
+        <button class="pause-button" id="quitToMenuBtn">Quit to Menu</button>
     </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOver" class="screen">
+        <h1>GAME OVER</h1>
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="label">Session Score</div>
+                <div class="value" id="finalScore">0</div>
+            </div>
+            <div class="stat-box highlight">
+                <div class="label">High Score</div>
+                <div class="value" id="highScoreFinal">0</div>
+                <div class="new-record" id="newRecordIndicator" style="display: none;">NEW RECORD!</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">Games Played</div>
+                <div class="value" id="totalGames">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="label">Total Score</div>
+                <div class="value" id="totalScore">0</div>
+            </div>
+        </div>
+        <div class="game-over-buttons">
+            <button class="restart-button" id="restartBtn">Try Again</button>
+            <button class="menu-return-button" id="mainMenuBtn">Main Menu</button>
+        </div>
+    </div>
+
     <script type="module" src="index.js"></script>
 </body>
 </html>

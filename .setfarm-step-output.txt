@@ -1,3 +1,5 @@
 STATUS: done
-VERIFIED: Addressed all review comments - SoundManager background music cleanup fixed, redundant mute logic removed, constants added for asteroid sizes, innerHTML replaced with DOM manipulation, PowerUp.COLORS made public, shieldActive property removed, Player shoot code simplified. All 61 tests pass, build succeeds.
-MERGED: true
+STORY_BRANCH: 835b10cc-US-006
+PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/4
+CHANGES: Implemented Enemy Ship System with Enemy base interface, BasicEnemy (horizontal movement + shooting), HunterEnemy (patrol/charge AI), EnemyBullet class, and EnemySpawnSystem. Integrated enemy collisions with player and bullets in Game.ts.
+TESTS: Added comprehensive tests for BasicEnemy, HunterEnemy, EnemyBullet, and EnemySpawnSystem covering movement, shooting, collision detection, damage, and spawning behavior.
