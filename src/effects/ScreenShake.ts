@@ -17,7 +17,6 @@ export class ScreenShake {
         this.duration = config.duration ?? 30;
         this.decay = config.decay ?? 0.9;
         this.active = true;
-        
         this.generateOffset();
     }
 
@@ -28,20 +27,16 @@ export class ScreenShake {
             this.active = false;
             return;
         }
-
         this.offsetX = (Math.random() - 0.5) * 2 * this.intensity;
         this.offsetY = (Math.random() - 0.5) * 2 * this.intensity;
     }
 
     public update(): void {
         if (!this.active) return;
-
         this.duration--;
-        
         if (this.duration <= 0) {
             this.intensity *= this.decay;
         }
-
         if (this.intensity <= 0.5) {
             this.active = false;
             this.offsetX = 0;
@@ -64,19 +59,8 @@ export class ScreenShake {
         }
     }
 
-    public isActive(): boolean {
-        return this.active;
-    }
-
-    public getOffsetX(): number {
-        return this.offsetX;
-    }
-
-    public getOffsetY(): number {
-        return this.offsetY;
-    }
-
-    public getIntensity(): number {
-        return this.intensity;
-    }
+    public isActive(): boolean { return this.active; }
+    public getOffsetX(): number { return this.offsetX; }
+    public getOffsetY(): number { return this.offsetY; }
+    public getIntensity(): number { return this.intensity; }
 }

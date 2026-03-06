@@ -9,7 +9,8 @@
     "dev": "tsc --watch",
     "serve": "npx serve dist -p 3534",
     "lint": "eslint src --ext .ts --ignore-pattern '*.test.ts'",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "keywords": ["game", "canvas", "typescript", "space-shooter"],
   "author": "",

@@ -92,7 +92,7 @@ export class Particle {
     private calculateSize(config: ParticleConfig): number {
         const baseSize = config.size ?? 3;
         
-        switch (config.type) {
+        switch (this.type) {
             case 'explosion':
                 return baseSize * (0.8 + Math.random() * 1.5);
             case 'thruster':
@@ -118,7 +118,6 @@ export class Particle {
         this.y += this.vy;
         this.vy += this.gravity;
         
-        // Apply different friction based on type
         const friction = this.type === 'spark' ? 0.96 : 0.98;
         this.vx *= friction;
         this.vy *= friction;
@@ -138,56 +137,38 @@ export class Particle {
         ctx.fillStyle = this.color;
         ctx.shadowColor = this.color;
         
-        // Different visual styles for each particle type
         switch (this.type) {
             case 'explosion':
-                this.renderExplosion(ctx, alpha);
+                ctx.shadowBlur = 8 * alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * (0.5 + alpha * 0.5), 0, Math.PI * 2);
+                ctx.fill();
                 break;
-            case 'thruster':
-                this.renderThruster(ctx, alpha);
+            case 'thruster': {
+                ctx.shadowBlur = 5;
+                const stretch = 1 + (1 - alpha) * 2;
+                ctx.beginPath();
+                ctx.ellipse(
+                    this.x, this.y,
+                    this.size * stretch, this.size,
+                    Math.atan2(this.vy, this.vx),
+                    0, Math.PI * 2
+                );
+                ctx.fill();
                 break;
-            case 'spark':
-                this.renderSpark(ctx, alpha);
+            }
+            case 'spark': {
+                ctx.shadowBlur = 3;
+                const length = this.size * (1 + Math.abs(this.vx + this.vy) * 0.1);
+                const angle = Math.atan2(this.vy, this.vx);
+                ctx.translate(this.x, this.y);
+                ctx.rotate(angle);
+                ctx.fillRect(-length / 2, -this.size / 2, length, this.size);
                 break;
+            }
         }
         
         ctx.restore();
-    }
-
-    private renderExplosion(ctx: CanvasRenderingContext2D, alpha: number): void {
-        ctx.shadowBlur = 8 * alpha;
-        
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size * (0.5 + alpha * 0.5), 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    private renderThruster(ctx: CanvasRenderingContext2D, alpha: number): void {
-        ctx.shadowBlur = 5;
-        
-        // Elongated shape for thruster effect
-        const stretch = 1 + (1 - alpha) * 2;
-        ctx.beginPath();
-        ctx.ellipse(
-            this.x, this.y,
-            this.size * stretch, this.size,
-            Math.atan2(this.vy, this.vx),
-            0, Math.PI * 2
-        );
-        ctx.fill();
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private renderSpark(ctx: CanvasRenderingContext2D, alpha: number): void {
-        ctx.shadowBlur = 3;
-        
-        // Draw small rectangle for spark
-        const length = this.size * (1 + Math.abs(this.vx + this.vy) * 0.1);
-        const angle = Math.atan2(this.vy, this.vx);
-        
-        ctx.translate(this.x, this.y);
-        ctx.rotate(angle);
-        ctx.fillRect(-length / 2, -this.size / 2, length, this.size);
     }
 
     public getType(): ParticleType {

@@ -1,5 +1,3 @@
-import { Enemy } from './Enemy';
-
 export class EnemyBullet {
     public x: number;
     public y: number;
@@ -36,7 +34,6 @@ export class EnemyBullet {
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
         
-        // Glow effect
         ctx.globalAlpha = 0.3;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);

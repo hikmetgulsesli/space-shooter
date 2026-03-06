@@ -1,7 +1,3 @@
-/**
- * Design Tokens - Single source of truth for design values
- * Extracted from stitch/design-tokens.css
- */
 export const designTokens = {
     colors: {
         primary: '#57b0ff',
@@ -32,30 +28,14 @@ export const designTokens = {
         body: '"DM Sans", sans-serif',
         mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
     },
-    space: {
-        xs: '0.25rem',
-        sm: '0.5rem',
-        md: '1rem',
-        lg: '1.5rem',
-        xl: '2rem',
-        '2xl': '3rem',
-    },
-    radius: {
-        sm: '0.125rem',
-        md: '0.25rem',
-        lg: '0.5rem',
-        full: '0.75rem',
-    },
+    space: { xs: '0.25rem', sm: '0.5rem', md: '1rem', lg: '1.5rem', xl: '2rem', '2xl': '3rem' },
+    radius: { sm: '0.125rem', md: '0.25rem', lg: '0.5rem', full: '0.75rem' },
     shadows: {
         glowPrimary: '0 0 10px rgba(87, 176, 255, 0.5)',
         glowLime: '0 0 10px rgba(126, 231, 135, 0.4)',
         card: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
     },
-    transitions: {
-        fast: '150ms ease',
-        normal: '300ms ease',
-        slow: '500ms ease',
-    },
+    transitions: { fast: '150ms ease', normal: '300ms ease', slow: '500ms ease' },
 } as const;
 
 export default designTokens;

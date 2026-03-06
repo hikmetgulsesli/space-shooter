@@ -1,5 +1,4 @@
 import { Enemy } from './Enemy';
-import { EnemyBullet } from './EnemyBullet';
 
 export class HunterEnemy implements Enemy {
     public x: number;
@@ -33,12 +32,10 @@ export class HunterEnemy implements Enemy {
         const dy = playerY - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // State machine
         switch (this.state) {
             case 'patrol':
                 this.patrol(canvas);
                 
-                // Check if player is in detection range
                 if (distance < this.detectionRange && this.chargeCooldown <= 0) {
                     this.state = 'charge';
                     this.targetX = playerX;
@@ -51,12 +48,11 @@ export class HunterEnemy implements Enemy {
                 this.charge();
                 this.chargeTimer++;
                 
-                // End charge after certain time or if off screen
                 if (this.chargeTimer > 60 || 
                     this.x < -50 || this.x > canvas.width + 50 ||
                     this.y < -50 || this.y > canvas.height + 50) {
                     this.state = 'retreat';
-                    this.chargeCooldown = 180; // 3 seconds cooldown
+                    this.chargeCooldown = 180;
                 }
                 break;
 
@@ -70,10 +66,8 @@ export class HunterEnemy implements Enemy {
                 break;
         }
 
-        // Deactivate if far off screen
         if (this.x < -100 || this.x > canvas.width + 100 ||
             this.y < -100 || this.y > canvas.height + 100) {
-            // Only deactivate if not charging (to let charge complete)
             if (this.state !== 'charge') {
                 this.active = false;
             }
@@ -81,16 +75,14 @@ export class HunterEnemy implements Enemy {
     }
 
     private patrol(canvas: HTMLCanvasElement): void {
-        // Move in a figure-8 or circular pattern
         this.patrolAngle += 0.02;
         this.x += Math.cos(this.patrolAngle) * this.speed;
         this.y += Math.sin(this.patrolAngle * 2) * this.speed * 0.5 + 0.5;
 
-        // Keep within bounds
         if (this.x < 50) this.x = 50;
         if (this.x > canvas.width - 50) this.x = canvas.width - 50;
         if (this.y < 50) this.y = 50;
-        if (this.y > canvas.height / 2) this.y = canvas.height / 2; // Stay in upper half
+        if (this.y > canvas.height / 2) this.y = canvas.height / 2;
     }
 
     private charge(): void {
@@ -105,13 +97,11 @@ export class HunterEnemy implements Enemy {
     }
 
     private retreat(canvas: HTMLCanvasElement): void {
-        // Move back to top of screen
         const targetY = 100;
         const dy = targetY - this.y;
         
         this.y += Math.sign(dy) * this.speed;
         
-        // Slow horizontal drift toward center
         const centerX = canvas.width / 2;
         const dx = centerX - this.x;
         this.x += (dx / canvas.width) * this.speed;
@@ -123,7 +113,6 @@ export class HunterEnemy implements Enemy {
         ctx.save();
         ctx.translate(this.x, this.y);
 
-        // Color changes based on state
         const currentColor = this.state === 'charge' ? this.chargeColor : this.color;
         
         ctx.strokeStyle = currentColor;
@@ -131,9 +120,7 @@ export class HunterEnemy implements Enemy {
         ctx.shadowColor = currentColor;
         ctx.shadowBlur = this.state === 'charge' ? 15 : 8;
 
-        // Draw hunter ship body - more aggressive shape
         ctx.beginPath();
-        // Diamond-like shape
         ctx.moveTo(0, this.height / 2);
         ctx.lineTo(-this.width / 2, 0);
         ctx.lineTo(-this.width / 4, -this.height / 2);
@@ -142,7 +129,6 @@ export class HunterEnemy implements Enemy {
         ctx.closePath();
         ctx.stroke();
 
-        // Inner detail
         ctx.beginPath();
         ctx.moveTo(0, this.height / 4);
         ctx.lineTo(-this.width / 4, 0);
@@ -151,7 +137,6 @@ export class HunterEnemy implements Enemy {
         ctx.closePath();
         ctx.stroke();
 
-        // Engine glows
         const engineOffset = this.state === 'charge' ? -12 : -6;
         ctx.fillStyle = this.state === 'charge' ? '#ff0000' : '#ffaa00';
         ctx.shadowColor = ctx.fillStyle;
@@ -168,7 +153,6 @@ export class HunterEnemy implements Enemy {
         ctx.lineTo(4, -this.height / 2);
         ctx.fill();
 
-        // Detection indicator when charging
         if (this.state === 'charge') {
             ctx.strokeStyle = '#ff0000';
             ctx.setLineDash([5, 5]);
