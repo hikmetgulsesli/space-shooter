@@ -39,6 +39,13 @@
       "type": "game"
     },
     {
+      "id": "game-hud",
+      "title": "Astro Blaster Industrial HUD Overlay",
+      "html": "game-hud.html",
+      "screenshot": "game-hud.png",
+      "type": "hud"
+    },
+    {
       "id": "game-over-screen",
       "title": "Astro Blaster Game Over Screen",
       "html": "game-over-screen.html",
@@ -46,6 +53,6 @@
       "type": "game-over"
     }
   ],
-  "totalScreens": 5,
-  "generatedAt": "2025-03-06T21:30:00Z"
+  "totalScreens": 6,
+  "generatedAt": "2025-03-06T21:39:00Z"
 }
