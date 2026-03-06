@@ -1,5 +1,5 @@
 STATUS: done
-STORY_BRANCH: 835b10cc-US-006
-PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/4
-CHANGES: Implemented Enemy Ship System with Enemy base interface, BasicEnemy (horizontal movement + shooting), HunterEnemy (patrol/charge AI), EnemyBullet class, and EnemySpawnSystem. Integrated enemy collisions with player and bullets in Game.ts.
-TESTS: Added comprehensive tests for BasicEnemy, HunterEnemy, EnemyBullet, and EnemySpawnSystem covering movement, shooting, collision detection, damage, and spawning behavior.
+STORY_BRANCH: 835b10cc-US-007
+PR_URL: https://github.com/hikmetgulsesli/space-shooter/pull/6
+CHANGES: Implemented wave-based progression system with WaveSystem class. Added wave counter to HUD, wave completion detection, wave bonus points (100 x wave), difficulty scaling (spawn rate decreases per wave, cap at 30), boss waves every 5th wave with 2x enemy spawn rate, and 3-second wave complete message display. Updated EnemySpawnSystem to use wave-based intervals and CollisionManager with enemy collision methods.
+TESTS: Created comprehensive test suite in tests/waves.test.ts covering wave initialization, progression, difficulty scaling, boss waves, message display, bonus calculation, and reset functionality. All WaveSystem tests pass.

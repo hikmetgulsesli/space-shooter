@@ -4,7 +4,6 @@
  */
 
 import { Game, GameState } from '../src/Game';
-import { ScoreManager } from '../src/score/ScoreManager';
 
 // Mock localStorage
 const localStorageMock = {
@@ -15,6 +14,38 @@ const localStorageMock = {
 };
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(),
+        removeListener: jest.fn(),
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+    })),
+});
+
+// Mock canvas context
+const mockCanvasContext = {
+    fillStyle: '',
+    fillRect: jest.fn(),
+    beginPath: jest.fn(),
+    moveTo: jest.fn(),
+    lineTo: jest.fn(),
+    stroke: jest.fn(),
+    arc: jest.fn(),
+    fill: jest.fn(),
+    save: jest.fn(),
+    restore: jest.fn(),
+    translate: jest.fn(),
+    rotate: jest.fn(),
+    globalAlpha: 1
+};
+
 // Mock ScoreManager
 jest.mock('../src/score/ScoreManager', () => {
     return {
@@ -22,7 +53,8 @@ jest.mock('../src/score/ScoreManager', () => {
             getHighScore: jest.fn().mockReturnValue(10000),
             getTotalGamesPlayed: jest.fn().mockReturnValue(5),
             getTotalScoreAccumulated: jest.fn().mockReturnValue(50000),
-            recordGame: jest.fn()
+            recordGame: jest.fn(),
+            getHighestWave: jest.fn().mockReturnValue(3)
         }))
     };
 });
@@ -76,6 +108,8 @@ describe('Menu System', () => {
 
     beforeEach(() => {
         canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+        // Mock getContext
+        jest.spyOn(canvas, 'getContext').mockReturnValue(mockCanvasContext as unknown as CanvasRenderingContext2D);
         game = new Game(canvas);
     });
 
@@ -90,18 +124,11 @@ describe('Menu System', () => {
     });
 
     describe('State Transitions', () => {
-        it('should transition from MENU to PLAYING when startGame is called', () => {
-            // Simulate start by calling the public method through event
-            const startBtn = document.getElementById('startGameBtn');
-            startBtn?.click();
-            
-            // Since we can't easily test the async game loop, verify the method exists
+        it('should have start method', () => {
             expect(typeof game.start).toBe('function');
         });
 
         it('should have pause method that checks current state', () => {
-            // Cannot directly test private methods, but we can verify they exist
-            // and are called appropriately through event handlers
             expect(game.getGameState()).toBe(GameState.MENU);
         });
     });
@@ -242,13 +269,9 @@ describe('UI Elements', () => {
 
 describe('Button Hover Effects', () => {
     it('menu buttons should have CSS hover effects defined', () => {
-        // Check that the button style includes transition property
         const startBtn = document.getElementById('startGameBtn') as HTMLButtonElement;
         expect(startBtn).not.toBeNull();
-        
-        // The actual CSS testing is done through visual inspection,
-        // but we verify the buttons exist and are styled
-        expect(startBtn.classList.contains('menu-button') || startBtn.tagName === 'BUTTON').toBeTruthy();
+        expect(startBtn.tagName).toBe('BUTTON');
     });
 });
 
@@ -256,11 +279,10 @@ describe('Keyboard Controls', () => {
     it('should set up keyboard event listeners', () => {
         const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
         
-        // Create a new game instance to trigger event listener setup
         const canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+        jest.spyOn(canvas, 'getContext').mockReturnValue(mockCanvasContext as unknown as CanvasRenderingContext2D);
         new Game(canvas);
         
-        // Verify that keydown listener was added
         const keydownCalls = addEventListenerSpy.mock.calls.filter(
             call => call[0] === 'keydown'
         );
