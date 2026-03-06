@@ -354,30 +354,30 @@ export class Game {
 
     private updateBullets(): void {
         // Update bullets and return inactive ones to pool
-        const activeBullets: Bullet[] = [];
+        let writeIndex = 0;
         for (const bullet of this.bullets) {
             bullet.update();
             if (bullet.isActive(this.canvas)) {
-                activeBullets.push(bullet);
+                this.bullets[writeIndex++] = bullet;
             } else {
                 bulletPool.release(bullet);
             }
         }
-        this.bullets = activeBullets;
+        this.bullets.length = writeIndex;
     }
 
     private updateParticles(): void {
         // Update particles and return inactive ones to pool
-        const activeParticles: Particle[] = [];
+        let writeIndex = 0;
         for (const particle of this.particles) {
             particle.update();
             if (particle.isActive()) {
-                activeParticles.push(particle);
+                this.particles[writeIndex++] = particle;
             } else {
                 particlePool.release(particle);
             }
         }
-        this.particles = activeParticles;
+        this.particles.length = writeIndex;
     }
 
     private updatePowerUps(): void {
@@ -402,8 +402,20 @@ export class Game {
             }
         }
 
-        // Check player-asteroid and bullet-asteroid collisions
-        for (let i = this.asteroids.length - 1; i >= 0; i--) {
+        // Get spatial grid candidates for efficient collision detection
+        const playerAsteroidCandidates = this.collisionManager.getAsteroidsNearPlayer(this.player);
+        const bulletAsteroidCandidates: Map<number, number[]> = new Map();
+        for (let j = 0; j < this.bullets.length; j++) {
+            bulletAsteroidCandidates.set(j, this.collisionManager.getAsteroidsNearBullet(this.bullets[j]));
+        }
+
+        // Check player-asteroid collisions using spatial grid
+        const asteroidsToCheck = playerAsteroidCandidates.length > 0 
+            ? playerAsteroidCandidates 
+            : this.asteroids.map((_, i) => i);
+        
+        for (const i of asteroidsToCheck) {
+            if (i >= this.asteroids.length) continue;
             const asteroid = this.asteroids[i];
 
             if (this.collisionManager.checkPlayerAsteroidCollision(this.player, asteroid)) {
@@ -425,9 +437,19 @@ export class Game {
                 }
                 continue;
             }
+        }
 
-            for (let j = this.bullets.length - 1; j >= 0; j--) {
-                const bullet = this.bullets[j];
+        // Check bullet-asteroid collisions using spatial grid
+        for (let j = this.bullets.length - 1; j >= 0; j--) {
+            const bullet = this.bullets[j];
+            const candidateIndices = bulletAsteroidCandidates.get(j) || [];
+            const asteroidsToCheckForBullet = candidateIndices.length > 0 
+                ? candidateIndices 
+                : this.asteroids.map((_, i) => i);
+
+            for (const i of asteroidsToCheckForBullet) {
+                if (i >= this.asteroids.length) continue;
+                const asteroid = this.asteroids[i];
 
                 if (this.collisionManager.checkBulletAsteroidCollision(bullet, asteroid)) {
                     this.score += asteroid.getPoints();
@@ -518,7 +540,7 @@ export class Game {
         const activePowerUps = this.powerUpManager.getActivePowerUps();
 
         // Clear existing indicators safely
-        this.powerUpsElement.innerHTML = '';
+        this.powerUpsElement.textContent = '';
 
         // Add indicators for each active power-up
         for (const powerUp of activePowerUps) {
