@@ -8,7 +8,7 @@ export interface SoundConfig {
 export class SoundManager {
     private audioContext: AudioContext | null = null;
     private sounds: Map<SoundType, AudioBuffer> = new Map();
-    private backgroundOscillator: OscillatorNode | null = null;
+    private backgroundOscillators: OscillatorNode[] = [];
     private backgroundGain: GainNode | null = null;
     private isMuted: boolean = false;
     private reducedMotion: boolean = false;
@@ -60,10 +60,6 @@ export class SoundManager {
     private updateMasterVolume(): void {
         if (this.masterGain) {
             this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 1, this.audioContext!.currentTime);
-        }
-        if (this.backgroundGain) {
-            const targetVolume = this.isMuted ? 0 : 0.3;
-            this.backgroundGain.gain.setValueAtTime(targetVolume, this.audioContext!.currentTime);
         }
     }
 
@@ -223,22 +219,21 @@ export class SoundManager {
 
         try {
             // Create ambient space drone using multiple oscillators
-            this.backgroundOscillator = this.audioContext.createOscillator();
             this.backgroundGain = this.audioContext.createGain();
-
             const osc2 = this.audioContext.createOscillator();
             const gain2 = this.audioContext.createGain();
 
             // Primary drone - low frequency with subtle movement
-            this.backgroundOscillator.type = 'sine';
-            this.backgroundOscillator.frequency.setValueAtTime(60, this.audioContext.currentTime);
+            const osc1 = this.audioContext.createOscillator();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(60, this.audioContext.currentTime);
 
             // Secondary drone - slightly detuned
             osc2.type = 'triangle';
             osc2.frequency.setValueAtTime(62, this.audioContext.currentTime);
 
             // Low volume for ambient background
-            const volume = this.isMuted ? 0 : 0.3;
+            const volume = 0.3;
             this.backgroundGain.gain.setValueAtTime(volume, this.audioContext.currentTime);
             gain2.gain.setValueAtTime(volume * 0.5, this.audioContext.currentTime);
 
@@ -248,36 +243,34 @@ export class SoundManager {
             const lfoGain = this.audioContext.createGain();
             lfoGain.gain.setValueAtTime(5, this.audioContext.currentTime);
             lfo.connect(lfoGain);
-            lfoGain.connect(this.backgroundOscillator.frequency);
-            lfo.start();
+            lfoGain.connect(osc1.frequency);
 
-            this.backgroundOscillator.connect(this.backgroundGain);
+            osc1.connect(this.backgroundGain);
             this.backgroundGain.connect(this.masterGain!);
             osc2.connect(gain2);
             gain2.connect(this.masterGain!);
 
-            this.backgroundOscillator.start();
+            osc1.start();
             osc2.start();
+            lfo.start();
 
-            // Store secondary oscillator reference on primary for cleanup
-            (this.backgroundOscillator as unknown as { osc2: OscillatorNode }).osc2 = osc2;
+            // Store all oscillators for cleanup
+            this.backgroundOscillators = [osc1, osc2, lfo];
         } catch (error) {
             console.warn('Failed to start background music:', error);
         }
     }
 
     public stopBackgroundMusic(): void {
-        if (this.backgroundOscillator) {
+        for (const osc of this.backgroundOscillators) {
             try {
-                this.backgroundOscillator.stop();
-                const osc2 = (this.backgroundOscillator as unknown as { osc2?: OscillatorNode }).osc2;
-                if (osc2) osc2.stop();
+                osc.stop();
             } catch (error) {
                 // Oscillator may already be stopped
             }
-            this.backgroundOscillator = null;
-            this.backgroundGain = null;
         }
+        this.backgroundOscillators = [];
+        this.backgroundGain = null;
     }
 
     public resume(): void {

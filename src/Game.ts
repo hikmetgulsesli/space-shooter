@@ -7,6 +7,10 @@ import { CollisionManager } from './collision/CollisionManager';
 import { PowerUp, PowerUpManager, PowerUpType } from './entities/PowerUp';
 import { SoundManager } from './audio/SoundManager';
 
+// Constants for asteroid size thresholds
+const SMALL_ASTEROID_MAX_RADIUS = 20;
+const MEDIUM_ASTEROID_MAX_RADIUS = 32;
+
 export class Game {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
@@ -231,8 +235,8 @@ export class Game {
         powerUp.collect();
         this.soundManager.play('powerUp');
 
-        // Create collection effect
-        const color = type === 'rapidFire' ? '#ff6b35' : type === 'shield' ? '#00d4ff' : '#a3e635';
+        // Create collection effect using PowerUp.COLORS
+        const color = PowerUp.COLORS[type];
         for (let i = 0; i < 10; i++) {
             this.particles.push(new Particle(this.player.x, this.player.y, color));
         }
@@ -240,9 +244,9 @@ export class Game {
 
     private playExplosionSound(asteroid: Asteroid): void {
         const radius = asteroid.getRadius();
-        if (radius <= 20) {
+        if (radius <= SMALL_ASTEROID_MAX_RADIUS) {
             this.soundManager.play('explosionSmall');
-        } else if (radius <= 32) {
+        } else if (radius <= MEDIUM_ASTEROID_MAX_RADIUS) {
             this.soundManager.play('explosionMedium');
         } else {
             this.soundManager.play('explosionLarge');
@@ -288,8 +292,8 @@ export class Game {
 
         const activePowerUps = this.powerUpManager.getActivePowerUps();
 
-        // Clear existing indicators
-        this.powerUpsElement.innerHTML = '';
+        // Clear existing indicators safely
+        this.powerUpsElement.textContent = '';
 
         // Add indicators for each active power-up
         for (const powerUp of activePowerUps) {
@@ -299,10 +303,15 @@ export class Game {
             const name = this.getPowerUpDisplayName(powerUp.type);
             const seconds = Math.ceil(powerUp.remainingTime / 1000);
 
-            indicator.innerHTML = `
-                <span>${name}</span>
-                <span class="power-up-timer">${seconds}s</span>
-            `;
+            const nameSpan = document.createElement('span');
+            nameSpan.textContent = `${name} `;
+
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'power-up-timer';
+            timerSpan.textContent = `${seconds}s`;
+
+            indicator.appendChild(nameSpan);
+            indicator.appendChild(timerSpan);
 
             this.powerUpsElement.appendChild(indicator);
         }

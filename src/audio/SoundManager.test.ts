@@ -1,4 +1,4 @@
-import { SoundManager, SoundType } from '../src/audio/SoundManager';
+import { SoundManager, SoundType } from './SoundManager';
 
 // Mock AudioContext for testing
 class MockAudioContext {

@@ -80,27 +80,17 @@ export class Player {
 
         const bulletSpeed = 8;
 
-        if (this.powerUpManager.isMultiShotActive()) {
-            // Multi-shot: 3 bullets in spread pattern (-15°, 0°, +15°)
-            const spreadAngles = [-0.26, 0, 0.26]; // ~-15°, 0°, +15° in radians
-            for (const spread of spreadAngles) {
-                const angle = this.angle + spread;
-                const vx = Math.cos(angle) * bulletSpeed;
-                const vy = Math.sin(angle) * bulletSpeed;
-                bullets.push(new Bullet(
-                    this.x + Math.cos(angle) * 20,
-                    this.y + Math.sin(angle) * 20,
-                    vx,
-                    vy
-                ));
-            }
-        } else {
-            // Normal single shot
-            const vx = Math.cos(this.angle) * bulletSpeed;
-            const vy = Math.sin(this.angle) * bulletSpeed;
+        // Determine angles to shoot at
+        const angles = this.powerUpManager.isMultiShotActive()
+            ? [-0.26, 0, 0.26].map(spread => this.angle + spread) // ~-15°, 0°, +15° in radians
+            : [this.angle];
+
+        for (const angle of angles) {
+            const vx = Math.cos(angle) * bulletSpeed;
+            const vy = Math.sin(angle) * bulletSpeed;
             bullets.push(new Bullet(
-                this.x + Math.cos(this.angle) * 20,
-                this.y + Math.sin(this.angle) * 20,
+                this.x + Math.cos(angle) * 20,
+                this.y + Math.sin(angle) * 20,
                 vx,
                 vy
             ));
