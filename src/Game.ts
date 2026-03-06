@@ -8,6 +8,7 @@ import { PowerUp, PowerUpManager } from './entities/PowerUp';
 import { SoundManager } from './audio/SoundManager';
 import { FPSCounter } from './utils/FPSCounter';
 import { LoadingScreen } from './utils/LoadingScreen';
+import { EnemySpawnSystem } from './entities/enemies';
 
 // Constants for asteroid size thresholds
 const SMALL_ASTEROID_MAX_RADIUS = 20;
@@ -40,6 +41,7 @@ export class Game {
     private soundManager: SoundManager;
     private fpsCounter: FPSCounter;
     private loadingScreen: LoadingScreen | null = null;
+    private enemySpawnSystem: EnemySpawnSystem;
 
     private score: number = 0;
     private lives: number = 3;
@@ -75,6 +77,7 @@ export class Game {
         this.powerUpManager = new PowerUpManager();
         this.soundManager = new SoundManager();
         this.fpsCounter = new FPSCounter();
+        this.enemySpawnSystem = new EnemySpawnSystem(canvas);
 
         // Get UI elements
         this.mainMenuScreen = document.getElementById('mainMenu')!;
@@ -94,6 +97,7 @@ export class Game {
 
         this.setupEventListeners();
         this.setupMuteButton();
+        this.setupButtonListeners();
     }
 
     private setupEventListeners(): void {
@@ -279,6 +283,7 @@ export class Game {
         this.asteroidSpawnTimer = 0;
         this.asteroidSpawnInterval = 120;
         this.powerUpManager.clear();
+        this.enemySpawnSystem.reset();
 
         this.player = new Player(this.canvas.width / 2, this.canvas.height / 2, this.powerUpManager);
 
@@ -342,6 +347,7 @@ export class Game {
         this.updateBullets();
         this.updateParticles();
         this.updatePowerUps();
+        this.updateEnemies();
         this.checkCollisions();
         this.spawnAsteroids();
 
@@ -381,6 +387,10 @@ export class Game {
             }
         }
         this.particles = activeParticles;
+    }
+
+    private updateEnemies(): void {
+        this.enemySpawnSystem.update(this.player!.x, this.player!.y);
     }
 
     private updatePowerUps(): void {
@@ -459,6 +469,73 @@ export class Game {
                         this.createExplosion(asteroid.x, asteroid.y, asteroid.getColor());
                     }
                     break;
+                }
+            }
+        }
+
+        // Check player-enemy and bullet-enemy collisions
+        const enemies = this.enemySpawnSystem.getEnemies();
+        for (let i = enemies.length - 1; i >= 0; i--) {
+            const enemy = enemies[i];
+
+            if (this.collisionManager.checkPlayerEnemyCollision(this.player, enemy)) {
+                if (this.powerUpManager.useShield()) {
+                    this.createExplosion(enemy.x, enemy.y, '#0ff');
+                    this.enemySpawnSystem.removeEnemy(enemy);
+                    continue;
+                }
+
+                this.lives--;
+                this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
+                this.enemySpawnSystem.removeEnemy(enemy);
+
+                if (this.lives <= 0) {
+                    this.endGame();
+                }
+                continue;
+            }
+
+            for (let j = this.bullets.length - 1; j >= 0; j--) {
+                const bullet = this.bullets[j];
+
+                if (this.collisionManager.checkBulletEnemyCollision(bullet, enemy)) {
+                    enemy.takeDamage(10);
+                    // Return bullet to pool
+                    bulletPool.release(bullet);
+                    this.bullets.splice(j, 1);
+
+                    if (!enemy.isActive()) {
+                        this.score += enemy.getPoints();
+                        this.createExplosion(enemy.x, enemy.y, '#ff6b6b');
+                        this.soundManager.play('explosionMedium');
+                        this.enemySpawnSystem.removeEnemy(enemy);
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Check player-enemy bullet collisions
+        const enemyBullets = this.enemySpawnSystem.getBullets();
+        for (let i = enemyBullets.length - 1; i >= 0; i--) {
+            const enemyBullet = enemyBullets[i];
+
+            if (this.collisionManager.checkPlayerEnemyBulletCollision(this.player, enemyBullet)) {
+                if (this.powerUpManager.useShield()) {
+                    enemyBullet.deactivate();
+                    this.enemySpawnSystem.removeBullet(enemyBullet);
+                    continue;
+                }
+
+                this.lives--;
+                enemyBullet.deactivate();
+                this.enemySpawnSystem.removeBullet(enemyBullet);
+                this.createExplosion(this.player.x, this.player.y, '#0ff');
+                this.soundManager.play('playerDamage');
+
+                if (this.lives <= 0) {
+                    this.endGame();
                 }
             }
         }
@@ -576,6 +653,7 @@ export class Game {
         this.bullets.forEach(bullet => bullet.render(this.ctx));
         this.particles.forEach(particle => particle.render(this.ctx));
         this.powerUps.forEach(powerUp => powerUp.render(this.ctx));
+        this.enemySpawnSystem.render(this.ctx);
     }
 
     private drawStars(): void {

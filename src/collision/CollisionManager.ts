@@ -1,6 +1,8 @@
 import { Player } from '../entities/Player';
 import { Asteroid } from '../entities/Asteroid';
 import { Bullet } from '../entities/Bullet';
+import { Enemy } from '../entities/enemies/Enemy';
+import { EnemyBullet } from '../entities/enemies/EnemyBullet';
 import { SpatialGrid } from './SpatialGrid';
 
 export class CollisionManager {
@@ -85,6 +87,24 @@ export class CollisionManager {
             bullet.x, bullet.y, bullet.getRadius(),
             asteroid.x, asteroid.y, asteroid.getRadius()
         );
+    }
+
+    public checkPlayerEnemyCollision(player: Player, enemy: Enemy): boolean {
+        return this.distanceCheck(
+            player.x, player.y, player.getRadius(),
+            enemy.x, enemy.y, enemy.getRadius()
+        );
+    }
+
+    public checkBulletEnemyCollision(bullet: Bullet, enemy: Enemy): boolean {
+        return this.distanceCheck(
+            bullet.x, bullet.y, bullet.getRadius(),
+            enemy.x, enemy.y, enemy.getRadius()
+        );
+    }
+
+    public checkPlayerEnemyBulletCollision(player: Player, enemyBullet: EnemyBullet): boolean {
+        return enemyBullet.checkCollision(player.x, player.y, player.getRadius());
     }
 
     /**
