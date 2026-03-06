@@ -1,0 +1,429 @@
+/**
+ * Space Shooter - Design System
+ * Retro-futuristic dark theme with cyan primary and lime accent
+ */
+
+/* ========================================
+   FONTS - Google Fonts Import
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ========================================
+   DESIGN TOKENS - CSS Custom Properties
+   ======================================== */
+:root {
+  /* Base Colors - Zinc Palette */
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+
+  /* Primary Colors - Cyan */
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+
+  /* Accent Colors - Lime */
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
+  --color-lime-600: #65a30d;
+
+  /* Danger/Critical - Rose */
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #e11d48;
+
+  /* Semantic Color Variables */
+  --color-bg-primary: var(--color-zinc-950);
+  --color-bg-surface: var(--color-zinc-900);
+  --color-bg-elevated: var(--color-zinc-800);
+  
+  --color-text-primary: var(--color-zinc-50);
+  --color-text-secondary: var(--color-zinc-400);
+  --color-text-muted: var(--color-zinc-600);
+  
+  --color-primary: var(--color-cyan-400);
+  --color-primary-hover: var(--color-cyan-500);
+  --color-primary-glow: rgba(34, 211, 238, 0.5);
+  
+  --color-accent: var(--color-lime-400);
+  --color-accent-hover: var(--color-lime-500);
+  --color-accent-glow: rgba(163, 230, 53, 0.5);
+  
+  --color-danger: var(--color-rose-500);
+  --color-danger-glow: rgba(244, 63, 94, 0.5);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'Courier New', monospace;
+
+  /* Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-glow-primary: 0 0 20px var(--color-primary-glow);
+  --shadow-glow-accent: 0 0 20px var(--color-accent-glow);
+  --shadow-glow-danger: 0 0 20px var(--color-danger-glow);
+
+  /* Game Specific */
+  --game-width: 800px;
+  --game-height: 600px;
+  --hud-padding: var(--space-5);
+  --hud-gap: var(--space-4);
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+.game-container {
+  position: relative;
+  width: var(--game-width);
+  height: var(--game-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ========================================
+   CANVAS
+   ======================================== */
+#gameCanvas {
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glow-primary);
+  background-color: var(--color-bg-surface);
+}
+
+/* ========================================
+   UI OVERLAY SYSTEM
+   ======================================== */
+.ui-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--font-display);
+}
+
+.ui-overlay > * {
+  pointer-events: auto;
+}
+
+/* ========================================
+   HUD (Heads-Up Display)
+   ======================================== */
+.hud {
+  position: absolute;
+  top: var(--hud-padding);
+  left: var(--hud-padding);
+  right: var(--hud-padding);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--hud-gap);
+}
+
+.hud-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-shadow: 0 0 10px var(--color-primary-glow);
+}
+
+.hud-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hud-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* ========================================
+   GAME STATES
+   ======================================== */
+.game-screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.game-screen.active {
+  display: flex;
+}
+
+/* Main Menu */
+.main-menu {
+  text-align: center;
+  gap: var(--space-8);
+}
+
+.game-title {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  text-shadow: var(--shadow-glow-primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.game-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+}
+
+/* Game Over Screen */
+.game-over {
+  text-align: center;
+  gap: var(--space-6);
+}
+
+.game-over-title {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  color: var(--color-danger);
+  text-shadow: var(--shadow-glow-danger);
+  letter-spacing: 0.05em;
+}
+
+.game-over-score {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  color: var(--color-text-primary);
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.btn-accent {
+  background-color: transparent;
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-accent:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg-primary);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* ========================================
+   INSTRUCTIONS
+   ======================================== */
+.instructions {
+  position: absolute;
+  bottom: var(--hud-padding);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.instructions kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-zinc-700);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ========================================
+   POWER-UP INDICATORS
+   ======================================== */
+.power-ups {
+  position: absolute;
+  top: var(--hud-padding);
+  right: var(--hud-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.power-up-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.power-up-timer {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 840px) {
+  :root {
+    --game-width: 100vw;
+    --game-height: 100vh;
+  }
+
+  .game-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  #gameCanvas {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+  }
+
+  .hud {
+    padding: var(--space-4);
+  }
+
+  .hud-item {
+    font-size: var(--text-base);
+  }
+
+  .game-title {
+    font-size: var(--text-3xl);
+  }
+
+  .instructions {
+    font-size: var(--text-xs);
+    padding: 0 var(--space-4);
+  }
+}
+
+/* ========================================
+   DARK MODE META SUPPORT
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
